@@ -204,7 +204,7 @@ chest_pain:{steps:[
 ],gen:function(d){
   var p=['Wezwanie z powodu bólu w klatce piersiowej'];
   if(h(d,'onset_context'))p.push('Dolegliwości wystąpiły '+d.onset_context);
-  if(h(d,'onset_time'))p.push('Ból trwa od ok. '+d.onset_time.replace('< ','poniżej ').replace('> ','powyżej '));
+  if(h(d,'onset_time')){var ot=d.onset_time.replace('< ','poniżej ').replace('> ','powyżej ');p.push('Ból trwa '+(ot.indexOf('poniżej')===0||ot.indexOf('powyżej')===0?'':'od ok. ')+ot);}
   if(h(d,'first_episode')){var f=d.first_episode;if(f==='pierwszy epizod')p.push('Pierwszy taki epizod w życiu');else if(f==='hospitalizowany z tego powodu')p.push('Hospitalizowany z tego powodu w przeszłości');else p.push('Pacjent podaje '+f);}
   if(h(d,'pain_type'))p.push('Ból o charakterze '+d.pain_type+'m');
   if(h(d,'pain_location')){var l=d.pain_location;if(l==='zamostkowy')p.push('Zlokalizowany zamostkowo');else if(l==='międzyłopatkowy')p.push('Zlokalizowany międzyłopatkowo');else if(l.indexOf('nadbrzusz')>=0)p.push('Zlokalizowany w nadbrzuszu');else if(l==='rozlany w klatce')p.push('Rozlany w obrębie klatki piersiowej');else p.push('Po stronie '+l.replace('lewostronny','lewej').replace('prawostronny','prawej'));}
