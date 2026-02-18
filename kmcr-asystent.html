@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>KMCR Asystent</title>
+<style>
+:root {
+  --bg: #000000;  --sf: #0a0a0a;  --sf2: #171717;  --bd: #262626;  --tx: #ededed;  --dm: #a3a3a3;  --ac: #ffffff;  --ag: rgba(255,255,255,.1);  --rd: #ef4444;  --gn: #10b981;  --gb: rgba(16,185,129,.1);  --yl: #f59e0b;  --yb: rgba(245,158,11,.1);  --r: 8px;}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--tx); min-height:100vh; line-height:1.5; letter-spacing:-0.01em; }
+.H { background:rgba(0,0,0,0.8); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--bd); padding:16px 20px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+.Hb { display:flex; align-items:center; gap:12px; }
+.Hi { width:32px; height:32px; background:var(--tx); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:var(--bg); }
+.H h1 { font-size:16px; font-weight:600; letter-spacing:-0.02em; }
+.Hs { font-size:11px; color:var(--dm); font-weight:400; }
+.br { background:transparent; border:1px solid var(--bd); color:var(--tx); padding:8px 14px; border-radius:var(--r); font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s ease; }
+.br:active { background:var(--sf2); }
+.C { max-width:800px; margin:0 auto; padding:20px; }
+.S { display:none; animation:fadeIn 0.3s ease; }
+.S.a { display:block; }
+@keyframes fadeIn { from{opacity:0; transform:translateY(5px)} to{opacity:1; transform:translateY(0)} }
+.G { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:16px; }
+.gc { background:var(--sf); border:1px solid var(--bd); border-radius:var(--r); padding:20px 12px; cursor:pointer; text-align:center; transition:all 0.2s ease; }
+.gc:active { background:var(--sf2); transform:scale(0.98); }
+.gi { font-size:28px; margin-bottom:8px; opacity:0.9; filter: grayscale(100%); }
+.gl { font-size:13px; font-weight:500; }
+.gs { font-size:11px; color:var(--dm); margin-top:4px; }
+.st { font-size:13px; font-weight:500; color:var(--dm); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:16px; }
+.fl { font-size:13px; color:var(--tx); margin-bottom:10px; font-weight:500; }
+.fg { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+.c { background:var(--sf); border:1px solid var(--bd); color:var(--dm); padding:10px 16px; border-radius:24px; font-size:13px; font-weight:400; cursor:pointer; transition:all 0.15s ease; user-select:none; }
+.c:active { transform:scale(.96); }
+.c.s { background:var(--tx); border-color:var(--tx); color:var(--bg); font-weight:500; }
+.c.m.s { background:var(--sf2); border-color:var(--tx); color:var(--tx); font-weight:500; }
+.ti { width:100%; background:var(--sf); border:1px solid var(--bd); border-radius:var(--r); color:var(--tx); padding:14px 16px; font-size:14px; font-family:inherit; outline:none; margin-bottom:24px; transition:border-color 0.2s ease; }
+.ti:focus { border-color:var(--dm); }
+.ti::placeholder { color:var(--dm); }
+.bp { width:100%; background:var(--tx); color:var(--bg); border:none; padding:16px; border-radius:var(--r); font-size:15px; font-weight:600; cursor:pointer; margin-top:12px; transition:transform 0.1s; }
+.bp:active { transform:scale(0.98); opacity:0.9; }
+.bs { width:100%; background:transparent; color:var(--tx); border:1px solid var(--bd); padding:16px; border-radius:var(--r); font-size:14px; font-weight:500; cursor:pointer; margin-top:8px; transition:background 0.2s; }
+.bs:active { background:var(--sf2); }
+.oa { background:var(--bg); border:1px solid var(--bd); border-radius:var(--r); padding:20px; font-size:14px; line-height:1.6; margin-bottom:20px; white-space:pre-wrap; word-wrap:break-word; user-select:all; color:var(--tx); }
+.ol { font-size:11px; font-weight:500; color:var(--dm); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; }
+.bc { width:100%; background:var(--sf2); color:var(--tx); border:1px solid transparent; padding:16px; border-radius:var(--r); font-size:14px; font-weight:500; cursor:pointer; transition:all 0.1s; }
+.bc:active { transform:scale(.98); border-color:var(--bd); }
+.ba { width:100%; background:var(--tx); color:var(--bg); border:none; padding:16px; border-radius:var(--r); font-size:15px; font-weight:600; cursor:pointer; margin-bottom:12px; transition:transform 0.1s; }
+.ba:active { transform:scale(.98); opacity:0.9; }
+.wb { background:var(--sf); border-left:3px solid var(--yl); border-radius:4px; padding:16px; margin-bottom:24px; }
+.wt { font-size:12px; font-weight:600; color:var(--yl); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px; }
+.wi { font-size:13px; color:var(--dm); padding-left:14px; position:relative; margin-bottom:4px; }
+.wi::before { content:"\2022"; position:absolute; left:0; color:var(--yl); }
+.cp { display:flex; align-items:center; gap:12px; margin-bottom:24px; }
+.cpb { flex:1; height:4px; background:var(--sf); border-radius:2px; overflow:hidden; }
+.cpf { height:100%; border-radius:2px; transition:width 0.4s ease, background 0.4s ease; }
+.cpl { font-size:13px; font-weight:600; min-width:40px; text-align:right; }
+.nf { position:fixed; bottom:0; left:0; right:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-top:1px solid var(--bd); padding:16px 20px; padding-bottom:max(16px,env(safe-area-inset-bottom)); display:flex; gap:12px; z-index:100; }
+.nf .bp { margin:0; flex:1; }
+.nf .bs { margin:0; flex:0 0 auto; width:auto; padding:16px 24px; }
+.fs { height:100px; }
+.T { position:fixed; bottom:100px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--tx); color:var(--bg); padding:12px 24px; border-radius:30px; font-size:14px; font-weight:500; opacity:0; transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events:none; z-index:200; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
+.T.v { opacity:1; transform:translateX(-50%) translateY(0); }
+.si { display:flex; gap:4px; margin-bottom:24px; }
+.sd { flex:1; height:2px; background:var(--sf2); border-radius:1px; transition:background 0.3s ease; }
+.sd.d { background:var(--tx); }
+.sd.cur { background:var(--dm); }
+.ok { background:var(--sf); border-left:3px solid var(--gn); border-radius:4px; padding:16px; margin-bottom:24px; color:var(--gn); font-weight:500; font-size:13px; }
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.modal-content {
+  background: var(--sf);
+  padding: 24px;
+  border-radius: var(--r);
+  border: 1px solid var(--bd);
+  text-align: center;
+  max-width: 90%;
+  width: 400px;
+  animation: fadeIn 0.3s ease;
+}
+.modal-content h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+.modal-content .version { font-size: 12px; color: var(--dm); margin-bottom: 16px; }
+.modal-content .author { font-size: 14px; margin-bottom: 16px; }
+.modal-content .contact { font-size: 13px; line-height: 1.6; margin-bottom: 24px; }
+.modal-content a { color: var(--ac); font-weight: 500; }
+.floating-btn {  position: fixed;  top: 16px;  right: 20px;  z-index: 101;  background: rgba(10, 10, 10, 0.75);  backdrop-filter: blur(12px);  -webkit-backdrop-filter: blur(12px);}
+.mobile-only { display: none; }
+@media(max-width:500px){ .G{grid-template-columns:1fr 1fr} .c{padding:10px 14px; font-size:13px} .mobile-only { display: block; } }
+</style>
+</head>
+<body>
+<div class="T" id="toast"></div>
+<button class="br floating-btn" onclick="R()">Nowa karta</button>
+<div id="welcome-modal" class="modal-overlay">
+  <div class="modal-content">
+    <h2>KMCR Asystent</h2>
+    <p class="version">Wersja 0.1 (luty 26)</p>
+    <p class="author">Autor: jaqbek</p>
+    <p class="contact">
+      Masz pomysł na rozwój aplikacji? Napisz na:<br>
+      <a href="mailto:jaqbek.eth@gmail.com">jaqbek.eth@gmail.com</a>
+    </p>
+    <button id="close-modal" class="bp">Rozumiem</button>
+  </div>
+</div>
+<div class="C">
+<div class="S a" id="s0"><div class="st">Wybierz typ zdarzenia</div><div class="G" id="gr"></div></div>
+<div class="S" id="s1"><div class="si" id="si"></div><div id="fc"></div><div class="fs"></div></div>
+<div class="S" id="s2">
+<div class="st" style="margin-bottom:10px">Wygenerowany tekst</div>
+<div class="cp"><div class="cpb"><div class="cpf" id="cpf"></div></div><div class="cpl" id="cpl"></div></div>
+<div id="wc"></div>
+<div class="ol">Wywiad</div><div class="oa" id="ow"></div>
+<div class="ol">Opis</div><div class="oa" id="oo"></div>
+<button class="ba" onclick="cB()">Kopiuj wywiad + opis</button>
+<button class="bc" onclick="cT('w')">Kopiuj wywiad</button><div style="height:6px"></div>
+<button class="bc" onclick="cT('o')">Kopiuj opis</button><div style="height:10px"></div>
+<button class="bs" onclick="gB()">Wróć i edytuj</button><div style="height:6px"></div>
+<button class="bs" onclick="R()">Nowa karta</button><div class="fs"></div>
+</div>
+</div>
+<div class="nf" id="nf" style="display:none"><button class="bs" id="bP" onclick="pS()">Wstecz</button><button class="bp" id="bN" onclick="nS()">Dalej</button></div>
+
+<script>
+function J(p){return p.filter(function(x){return x&&String(x).trim().length>0}).join('. ')}
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):''}
+function h(d,k){var v=d[k];if(v==null)return false;if(Array.isArray(v))return v.length>0;if(typeof v==='string')return v.trim().length>0;return true}
+function pos(d,k){if(!h(d,k)||!Array.isArray(d[k]))return[];return d[k].filter(function(x){var l=x.toLowerCase();return l.indexOf('brak ')<0&&l.indexOf('neguje')<0&&l.indexOf('nie dotyczy')<0&&l.indexOf('nie przyjmuje')<0&&l.indexOf('nie posiada')<0&&l.indexOf('nie stosował')<0&&l.indexOf('nic nie')<0&&l.indexOf('pacjent neguje')<0&&l.indexOf('bez objawów')<0&&l.indexOf('bez obciążeń')<0&&l.indexOf('zaprzecza')<0&&l.indexOf('odmawia')<0&&l.indexOf('pełna auto')<0&&l.indexOf('nie wzywano')<0&&l.indexOf('prawidłowy szmer')<0&&l.indexOf('bez zagrożenia')<0&&l.indexOf('bez zachowań')<0&&l.indexOf('bez wywiadu')<0&&l.indexOf('bez hipoglikemii')<0&&l.indexOf('bez leczenia')<0&&l.indexOf('bez krwawienia')<0&&l.indexOf('nie pamięta')<0&&l.indexOf('nigdy nie')<0&&l.indexOf('pacjent nie zna')<0&&l.indexOf('trzeźwy')<0&&l.indexOf('nie promieniuje')<0&&l.indexOf('bez promieniowania')<0&&l.indexOf('prawidłowa czynność')<0&&l.indexOf('bez skurczów')<0})}
+function isN(d,k,n){if(!h(d,k))return false;var v=d[k];if(Array.isArray(v))return v.some(function(x){return x.toLowerCase().indexOf(n.toLowerCase())>=0});return String(v).toLowerCase().indexOf(n.toLowerCase())>=0}
+
+function hB(d){
+  var p=[];
+  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
+  else if(h(d,'chronic_other'))p.push('W wywiadzie: '+d.chronic_other.trim());
+  if(h(d,'medications_text'))p.push('Na stałe przyjmuje: '+d.medications_text.trim());
+  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
+  if(h(d,'substances')){var s=pos(d,'substances');if(isN(d,'substances','neguje'))p.push('Używki neguje');else if(s.length)p.push('Używki: '+s.join(', '));}
+  return p;
+}
+function nrs(d,k){if(!h(d,k))return'';var m=d[k].match(/(\d+-?\d*)/);return m?'NRS: '+m[1]+'/10':'';}
+function symp(d,k){if(!h(d,k))return'';var s=pos(d,k);if(s.length)return'Towarzyszą: '+s.join(', ');if(isN(d,k,'bez objawów'))return'Bez istotnych objawów towarzyszących';return'';}
+
+var CATS=[
+  {k:'chest_pain',i:'\u2764\uFE0F',l:'Ból w kl. piersiowej',s:'ACS, dławica'},
+  {k:'dyspnea',i:'\uD83C\uDF2C\uFE0F',l:'Duszność',s:'Astma, POChP, ZP'},
+  {k:'stroke',i:'\uD83E\uDDE0',l:'Udar / neurologia',s:'Udar, drgawki, omdlenie'},
+  {k:'cardiac_arrest',i:'\u26A1',l:'Zatrzymanie krążenia',s:'NZK, RKO'},
+  {k:'hypertension',i:'\uD83E\uDE7A',l:'Nadciśnienie',s:'Przełom nadciśnieniowy'},
+  {k:'trauma',i:'\uD83E\uDDB4',l:'Uraz',s:'Upadki, pobicia, urazy'},
+  {k:'traffic',i:'\uD83D\uDE91',l:'Wypadek komunikacyjny',s:'Kolizja, potrącenie'},
+  {k:'abdominal',i:'\uD83C\uDFE5',l:'Ból brzucha',s:'Brzuch ostry, kolka'},
+  {k:'hypoglycemia',i:'\uD83E\uDE78',l:'Zaburzenia glikemii',s:'Hipo-/hiperglikemia'},
+  {k:'allergy',i:'\u26A0\uFE0F',l:'Reakcja alergiczna',s:'Anafilaksja, pokrzywka'},
+  {k:'pregnancy',i:'\uD83E\uDD30',l:'Ciąża',s:'Poród, krwawienie, rzucawka'},
+  {k:'fever',i:'\uD83C\uDF21\uFE0F',l:'Gorączka',s:'Dziecko, senior, sepsa'},
+  {k:'alcohol',i:'\uD83C\uDF7A',l:'Upojenie alkoholowe',s:'Intoksykacja, odstawienie'},
+  {k:'psych',i:'\uD83D\uDCAC',l:'Psychiatria',s:'Pobudzenie, kryzys, psychoza'},
+  {k:'coffee',i:'☕',l:'Postaw kawę',s:'Wesprzyj autora'},
+  {k:'email', i:'✉️', l:'Wyślij e-mail', s:'Pomysły i sugestie', mobileOnly: true}
+];
+
+var SC={
+
+chest_pain:{steps:[
+  {id:"c",title:"Okoliczności",fields:[
+    {id:"onset_time",label:"Czas trwania",type:"single",options:["< 20 min","20-60 min","1-3 godz.","3-6 godz.","> 6 godz."]},
+    {id:"onset_context",label:"Okoliczności",type:"single",options:["w spoczynku","przy wysiłku","po posiłku","w nocy — obudził ze snu","przy stresie","po kokainie / amfetaminie","po urazie klatki"]},
+    {id:"first_episode",label:"Epizody w przeszłości",type:"single",options:["pierwszy epizod","bóle nawracające","podobny w przeszłości","hospitalizowany z tego powodu"]}
+  ]},
+  {id:"p",title:"Charakter bólu",fields:[
+    {id:"pain_type",label:"Charakter",type:"single",options:["gniotący","ściskający","kłujący","piekący","rozpierający","tępy","ostry przeszywający","rwący","opasujący"]},
+    {id:"pain_location",label:"Lokalizacja",type:"single",options:["zamostkowy","lewostronny","prawostronny","rozlany w klatce","w nadbrzuszu","międzyłopatkowy"]},
+    {id:"radiation",label:"Promieniowanie",type:"multi",options:["do lewego barku","do lewego ramienia","do żuchwy","do pleców","do prawego barku","do szyi","do nadbrzusza","nie promieniuje"]},
+    {id:"pain_nrs",label:"NRS",type:"single",options:["1-3 łagodny","4-6 umiarkowany","7-8 silny","9-10 najsilniejszy"]},
+    {id:"aggravating",label:"Nasila",type:"multi",options:["głęboki wdech","ruch / zmiana pozycji","wysiłek","połykanie","ucisk na klatkę","nic nie nasila"]},
+    {id:"relieving",label:"Łagodzi",type:"multi",options:["odpoczynek","nitrogliceryna","pozycja siedząca","leki p-bólowe","nic nie łagodzi"]}
+  ]},
+  {id:"a",title:"Objawy towarzyszące",fields:[
+    {id:"symptoms",label:"Objawy",type:"multi",options:["duszność","duszność spoczynkowa","nudności","wymioty","zimne poty","lęk","kołatanie serca","zawroty głowy","omdlenie","bladość","sinica","obrzęki kk. dolnych","kaszel","krwioplucie","gorączka","bez objawów towarzyszących"]},
+    {id:"symptoms_other",label:"Inne objawy (wpisz)",type:"text",placeholder:"np. uczucie umierania, drętwienie kk. górnych..."}
+  ]},
+  {id:"h",title:"Wywiad",fields:[
+    {id:"chronic",label:"Choroby przewlekłe",type:"multi",options:["nadciśnienie tętnicze","cukrzyca","choroba wieńcowa","po zawale serca","po PCI","po CABG","migotanie przedsionków","niewydolność serca","wada zastawkowa","POChP","astma","ch. zakrzepowo-zatorowa","hipercholesterolemia","otyłość","neguje choroby przewlekłe"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"medications_text",label:"Leki na stałe",type:"text",placeholder:"np. ramipril, bisoprolol, atorwastatyna..."},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","tak (wpisz poniżej)"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}},
+    {id:"substances",label:"Używki",type:"multi",options:["palenie tytoniu","alkohol","kokaina","amfetamina","neguje używki"]}
+  ]},
+  {id:"t",title:"Przed ZRM",fields:[
+    {id:"prior_tx",label:"Pacjent przyjął",type:"multi",options:["nitroglicerynę podjęzykowo","aspirynę","lek p-bólowy","dodatkową dawkę leku na nadciśnienie","nic nie przyjął"]},
+    {id:"nitro_resp",label:"Reakcja na NTG",type:"single",options:["ból ustąpił","ból zmniejszył się","bez poprawy","nie dotyczy"]},
+    {id:"notes",label:"Uwagi",type:"text",placeholder:""}
+  ]}
+],gen:function(d){
+  var p=['Wezwanie z powodu bólu w klatce piersiowej'];
+  if(h(d,'onset_context'))p.push('Dolegliwości wystąpiły '+d.onset_context);
+  if(h(d,'onset_time'))p.push('Ból trwa od ok. '+d.onset_time.replace('< ','poniżej ').replace('> ','powyżej '));
+  if(h(d,'first_episode')){var f=d.first_episode;if(f==='pierwszy epizod')p.push('Pierwszy taki epizod w życiu');else if(f==='hospitalizowany z tego powodu')p.push('Hospitalizowany z tego powodu w przeszłości');else p.push('Pacjent podaje '+f);}
+  if(h(d,'pain_type'))p.push('Ból o charakterze '+d.pain_type+'m');
+  if(h(d,'pain_location')){var l=d.pain_location;if(l==='zamostkowy')p.push('Zlokalizowany zamostkowo');else if(l==='międzyłopatkowy')p.push('Zlokalizowany międzyłopatkowo');else if(l.indexOf('nadbrzusz')>=0)p.push('Zlokalizowany w nadbrzuszu');else if(l==='rozlany w klatce')p.push('Rozlany w obrębie klatki piersiowej');else p.push('Po stronie '+l.replace('lewostronny','lewej').replace('prawostronny','prawej'));}
+  if(h(d,'radiation')){var r=pos(d,'radiation');if(r.length)p.push('Promieniuje '+r.join(', '));else if(isN(d,'radiation','nie promieniuje'))p.push('Bez promieniowania');}
+  var n=nrs(d,'pain_nrs');if(n)p.push(n);
+  if(h(d,'aggravating')){var a=pos(d,'aggravating');if(a.length)p.push('Nasila: '+a.join(', '));}
+  if(h(d,'relieving')){var r2=pos(d,'relieving');if(r2.length)p.push('Łagodzi: '+r2.join(', '));}
+  var sy=symp(d,'symptoms');if(sy)p.push(sy);
+  if(h(d,'symptoms_other'))p.push(d.symptoms_other.trim());
+  p=p.concat(hB(d));return J(p)+'.';
+},genO:function(d){
+  var p=[];
+  if(h(d,'prior_tx')){var t=pos(d,'prior_tx');if(t.length)p.push('Przed ZRM przyjął: '+t.join(', '));else if(isN(d,'prior_tx','nic nie'))p.push('Przed ZRM nie przyjmował leków');}
+  if(h(d,'nitro_resp')&&d.nitro_resp!=='nie dotyczy')p.push('Reakcja na NTG: '+d.nitro_resp);
+  if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';
+},warn:function(d){var w=[];if(!h(d,'pain_nrs'))w.push('Brak NRS');if(!h(d,'radiation'))w.push('Brak promieniowania');if(!h(d,'symptoms'))w.push('Brak objawów towarzyszących');if(!h(d,'chronic'))w.push('Brak wywiadu');if(!h(d,'medications_text'))w.push('Brak leków');if(!h(d,'allergies'))w.push('Brak alergii');return w;}
+},
+
+dyspnea:{steps:[
+  {id:"c",title:"Okoliczności",fields:[
+    {id:"onset_speed",label:"Początek",type:"single",options:["nagły (minuty)","stopniowy (godziny)","narastający od dni","przewlekła z zaostrzeniem"]},
+    {id:"onset_ctx",label:"Okoliczności",type:"single",options:["w spoczynku","przy wysiłku","w nocy — obudziła ze snu","po ekspozycji na alergen","w przebiegu infekcji","po aspiracji","po urazie klatki"]},
+    {id:"position",label:"Pozycja",type:"single",options:["nasila się w pozycji leżącej","ulga w pozycji siedzącej","ulga pochylony do przodu","nie zależy od pozycji"]}
+  ]},
+  {id:"ch",title:"Charakter",fields:[
+    {id:"dys_type",label:"Typ",type:"single",options:["wdechowa","wydechowa","mieszana"]},
+    {id:"sounds",label:"Osłuchiwanie",type:"multi",options:["świsty","furczenia","rzężenia wilgotne","rzężenia suche","trzeszczenia","stridor","szmer ściszony obustronnie","szmer ściszony jednostronnie","szmer zniesiony jednostronnie","prawidłowy szmer pęcherzykowy"]},
+    {id:"sounds_other",label:"Inne zjawiska osłuchowe (wpisz)",type:"text",placeholder:"np. tarcie opłucnowe, szmer naczyniowy..."},
+    {id:"cough",label:"Kaszel",type:"single",options:["suchy","produktywny","szczekający","z krwiopluciem","bez kaszlu"]},
+    {id:"sputum",label:"Plwocina",type:"single",options:["śluzowa","ropna żółto-zielona","różowa pienista","podbarwiona krwawo"],condition:{field:"cough",value:"produktywny"}},
+    {id:"speech",label:"Mówienie",type:"single",options:["pełne zdania","fragmenty zdań","pojedyncze wyrazy","nie jest w stanie mówić"]}
+  ]},
+  {id:"a",title:"Objawy towarzyszące",fields:[
+    {id:"symptoms",label:"Objawy",type:"multi",options:["ból w klatce","ból opłucnowy","kołatanie serca","obrzęki kk. dolnych","gorączka","zimne poty","sinica","bladość","lęk","zawroty głowy","omdlenie","ból łydki / obrzęk kończyny","bez objawów towarzyszących"]},
+    {id:"symptoms_other",label:"Inne objawy (wpisz)",type:"text",placeholder:""}
+  ]},
+  {id:"h",title:"Wywiad",fields:[
+    {id:"chronic",label:"Choroby",type:"multi",options:["astma","POChP","niewydolność serca","choroba wieńcowa","nadciśnienie","ch. zakrzepowo-zatorowa","zatorowość płucna w przeszłości","nadciśnienie płucne","choroba nowotworowa","otyłość","bezdech senny","neguje choroby przewlekłe"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"medications_text",label:"Leki",type:"text",placeholder:"np. salbutamol, budesonid, furosemid..."},
+    {id:"home_o2",label:"Tlenoterapia domowa",type:"single",options:["stały przepływ","CPAP/BiPAP na noc","nie stosuje"]},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","tak (wpisz poniżej)"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}},
+    {id:"substances",label:"Używki",type:"multi",options:["palenie aktywne","palenie w przeszłości","e-papierosy","alkohol","neguje używki"]}
+  ]},
+  {id:"t",title:"Przed ZRM",fields:[
+    {id:"prior_tx",label:"Stosował",type:"multi",options:["inhalator salbutamol","inhalator ipratropium","nebulizator własny","dodatkowa dawka diuretyku","tlenoterapia domowa","nic nie stosował"]},
+    {id:"prior_eff",label:"Efekt",type:"single",options:["poprawa","częściowa poprawa","bez poprawy","pogorszenie","nie dotyczy"]},
+    {id:"notes",label:"Uwagi",type:"text",placeholder:""}
+  ]}
+],gen:function(d){
+  var p=['Wezwanie z powodu duszności'];
+  if(h(d,'onset_speed'))p.push('Początek: '+d.onset_speed);
+  if(h(d,'onset_ctx'))p.push('Duszność wystąpiła '+d.onset_ctx);
+  if(h(d,'position')&&d.position!=='nie zależy od pozycji')p.push('Duszność '+d.position);
+  if(h(d,'dys_type'))p.push('Charakter: '+d.dys_type);
+  if(h(d,'speech'))p.push('Pacjent mówi '+d.speech.replace('pełne zdania','pełnymi zdaniami').replace('fragmenty zdań','fragmentami zdań').replace('pojedyncze wyrazy','pojedynczymi wyrazami'));
+  if(h(d,'sounds')){var s=pos(d,'sounds');if(s.length)p.push('Osłuchowo: '+s.join(', '));else if(isN(d,'sounds','prawidłowy'))p.push('Szmer pęcherzykowy prawidłowy');}
+  if(h(d,'sounds_other'))p.push(d.sounds_other.trim());
+  if(h(d,'cough')&&d.cough!=='bez kaszlu'){var c='Kaszel '+d.cough;if(h(d,'sputum'))c+=', plwocina '+d.sputum;p.push(c);}
+  var sy=symp(d,'symptoms');if(sy)p.push(sy);
+  if(h(d,'symptoms_other'))p.push(d.symptoms_other.trim());
+  p=p.concat(hB(d));
+  if(h(d,'home_o2')&&d.home_o2!=='nie stosuje')p.push('Tlenoterapia domowa: '+d.home_o2);
+  return J(p)+'.';
+},genO:function(d){
+  var p=[];if(h(d,'prior_tx')){var t=pos(d,'prior_tx');if(t.length)p.push('Przed ZRM stosował: '+t.join(', '));else if(isN(d,'prior_tx','nic nie'))p.push('Przed ZRM nie stosował leków');}
+  if(h(d,'prior_eff')&&d.prior_eff!=='nie dotyczy')p.push('Efekt: '+d.prior_eff);
+  if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';
+},warn:function(d){var w=[];if(!h(d,'onset_speed'))w.push('Brak początku');if(!h(d,'dys_type'))w.push('Brak typu');if(!h(d,'speech'))w.push('Brak oceny mówienia');if(!h(d,'sounds'))w.push('Brak osłuchiwania');if(!h(d,'chronic'))w.push('Brak wywiadu');return w;}
+},
+
+stroke:{steps:[
+  {id:"c",title:"Czas",fields:[
+    {id:"onset_time",label:"Godzina wystąpienia",type:"text",placeholder:"np. ok. 14:30"},
+    {id:"last_healthy",label:"Ostatnio widziany zdrowym",type:"text",placeholder:"np. 06:30"},
+    {id:"witness",label:"Źródło",type:"single",options:["pacjent sam","świadek zdarzenia","znaleziony z objawami","objawy po przebudzeniu"]},
+    {id:"onset_ctx",label:"Okoliczności",type:"single",options:["w spoczynku","przy wysiłku","codzienne czynności","po przebudzeniu","przy stresie","po urazie głowy"]}
+  ]},
+  {id:"n",title:"Objawy neurologiczne",fields:[
+    {id:"deficits",label:"Deficyty",type:"multi",options:["niedowład prawostronny","niedowład lewostronny","niedowład kk. górnej prawej","niedowład kk. górnej lewej","opadanie kącika ust","asymetria twarzy","afazja motoryczna","afazja czuciowa","afazja mieszana","dyzartria","zaburzenia widzenia","niedowidzenie połowicze","podwójne widzenie","zaburzenia czucia","ataksja / zaburzenia równowagi","oczopląs","silny ból głowy","nudności / wymioty","drgawki","sztywność karku","zaburzenia połykania"]},
+    {id:"consciousness",label:"Świadomość",type:"single",options:["przytomny, kontakt pełny","przytomny, splątany","senny","reaguje na ból","nieprzytomny"]},
+    {id:"dynamics",label:"Dynamika objawów",type:"single",options:["objawy narastające","objawy stabilne","objawy ustępujące","objawy zmienne (falujące)"]},
+    {id:"deficits_other",label:"Inne objawy (wpisz)",type:"text",placeholder:"np. afazja globalna, neglect lewostronny..."}
+  ]},
+  {id:"h",title:"Wywiad",fields:[
+    {id:"chronic",label:"Choroby",type:"multi",options:["nadciśnienie","migotanie przedsionków","cukrzyca","przebyty udar niedokrwienny","przebyty udar krwotoczny","przebyty TIA","choroba wieńcowa","wada zastawkowa","miażdżyca","stenoza t. szyjnej","neguje choroby przewlekłe"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"anticoag",label:"Antykoagulacja",type:"multi",options:["aspiryna","klopidogrel","tikagrelol","warfaryna","acenokumarol","riwaroksaban","dabigatran","apiksaban","heparyna","nie przyjmuje"]},
+    {id:"medications_text",label:"Inne leki",type:"text",placeholder:""},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","tak (wpisz poniżej)"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}},
+    {id:"last_meal",label:"Ostatni posiłek",type:"text",placeholder:"np. ok. 12:00"}
+  ]}
+],gen:function(d){
+  var p=['Wezwanie z powodu nagłych objawów neurologicznych'];
+  if(h(d,'onset_time'))p.push('Czas wystąpienia: '+d.onset_time.trim());
+  if(h(d,'last_healthy'))p.push('Ostatnio widziany zdrowym: '+d.last_healthy.trim());
+  if(h(d,'witness'))p.push(cap(d.witness));
+  if(h(d,'onset_ctx'))p.push('Okoliczności: '+d.onset_ctx);
+  if(h(d,'deficits'))p.push('Stwierdzono: '+d.deficits.join(', '));
+  if(h(d,'consciousness'))p.push('Świadomość: '+d.consciousness);
+  if(h(d,'dynamics'))p.push('Dynamika: '+d.dynamics);
+  if(h(d,'deficits_other'))p.push(d.deficits_other.trim());
+  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
+  else if(h(d,'chronic_other'))p.push('W wywiadzie: '+d.chronic_other.trim());
+  if(h(d,'anticoag')){var a=pos(d,'anticoag');if(a.length)p.push('Antykoagulacja: '+a.join(', '));else if(isN(d,'anticoag','nie przyjmuje'))p.push('Nie przyjmuje leków przeciwkrzepliwych');}
+  if(h(d,'medications_text'))p.push('Inne leki: '+d.medications_text.trim());
+  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
+  if(h(d,'last_meal'))p.push('Ostatni posiłek: '+d.last_meal.trim());
+  return J(p)+'.';
+},genO:function(d){return'';},
+warn:function(d){var w=[];if(!h(d,'onset_time')&&!h(d,'last_healthy'))w.push('KRYTYCZNE: Brak czasu wystąpienia / ostatniego widzenia zdrowym');if(!h(d,'deficits'))w.push('Brak deficytów');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'dynamics'))w.push('Brak dynamiki objawów');if(!h(d,'anticoag'))w.push('Brak antykoagulacji');return w;}
+},
+
+// ZATRZYMANIE KRĄŻENIA
+cardiac_arrest:{steps:[
+  {id:"c",title:"Okoliczności NZK",fields:[
+    {id:"witnessed",label:"NZK",type:"single",options:["obserwowane przez ZRM","obserwowane przez świadka","nieobserwowane — znaleziony"]},
+    {id:"location",label:"Miejsce zdarzenia",type:"single",options:["mieszkanie / dom","miejsce publiczne","miejsce pracy","ulica","pojazd","szpital / przychodnia","DPS / ZOL","inne"]},
+    {id:"bystander_cpr",label:"RKO świadków",type:"single",options:["RKO podjęte natychmiast","RKO podjęte z opóźnieniem","RKO telefoniczne (dyspozytorskie)","nie podjęto RKO","nie dotyczy (obserwowane przez ZRM)"]},
+    {id:"aed_before",label:"AED przed ZRM",type:"single",options:["użyto AED — defibrylacja wykonana","użyto AED — brak wskazań do defibrylacji","AED niedostępny","nie dotyczy"]},
+    {id:"est_time_arrest",label:"Szacowany czas NZK przed ZRM",type:"single",options:["< 5 min","5-10 min","10-20 min","> 20 min","nieznany"]}
+  ]},
+  {id:"p",title:"Prawdopodobna przyczyna",fields:[
+    {id:"probable_cause",label:"Podejrzewana przyczyna (4H/4T)",type:"single",options:["kardiogenna — OZW","kardiogenna — arytmia","kardiogenna — tamponada","kardiogenna — inna","hipoksja","hipovolemia / krwotok","hipo-/hiperkaliemia","hipotermia","zatorowość płucna","odma prężna","zatrucie / przedawkowanie","uraz","tonięcie","porażenie prądem","nieznana"]},
+    {id:"preceding",label:"Objawy poprzedzające (jeśli znane)",type:"multi",options:["ból w klatce piersiowej","duszność","kołatanie serca","omdlenie","drgawki","uraz","krwawienie","brak informacji"]},
+    {id:"preceding_other",label:"Inne okoliczności (wpisz)",type:"text",placeholder:"np. po wysiłku, po kąpieli, skarga na ból głowy..."}
+  ]},
+  {id:"h",title:"Wywiad (od rodziny / świadków)",fields:[
+    {id:"chronic",label:"Choroby",type:"multi",options:["choroba wieńcowa","po zawale serca","niewydolność serca","kardiomiopatia","wada zastawkowa","migotanie przedsionków","po implantacji ICD/PM","nadciśnienie","cukrzyca","ch. zakrzepowo-zatorowa","niewydolność nerek (dializy)","uzależnienie od substancji","neguje choroby przewlekłe","wywiad niedostępny"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"medications_text",label:"Leki (jeśli znane)",type:"text",placeholder:"np. amiodaron, bisoprolol, warfaryna..."},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","tak (wpisz poniżej)","nieznane"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}},
+    {id:"dnr",label:"Oświadczenie DNR / testament życia",type:"single",options:["brak informacji o DNR","rodzina podaje wolę nieresuscytowania","dokument DNR okazany","nie dotyczy"]}
+  ]}
+],gen:function(d){
+  var p=['Wezwanie do osoby z nagłym zatrzymaniem krążenia'];
+  if(h(d,'witnessed'))p.push(cap(d.witnessed));
+  if(h(d,'location'))p.push('Miejsce: '+d.location);
+  if(h(d,'est_time_arrest'))p.push('Szacowany czas NZK przed ZRM: '+d.est_time_arrest);
+  if(h(d,'bystander_cpr')){var v=d.bystander_cpr;if(v.indexOf('nie dotyczy')<0)p.push(cap(v));}
+  if(h(d,'aed_before')){var v2=d.aed_before;if(v2.indexOf('nie dotyczy')<0)p.push(cap(v2));}
+  if(h(d,'probable_cause'))p.push('Podejrzewana przyczyna: '+d.probable_cause);
+  if(h(d,'preceding')){var s=pos(d,'preceding');if(s.length)p.push('Objawy poprzedzające: '+s.join(', '));}
+  if(h(d,'preceding_other'))p.push(d.preceding_other.trim());
+  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent negował choroby przewlekłe');else if(isN(d,'chronic','wywiad niedostępny'))p.push('Wywiad chorobowy niedostępny');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
+  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
+  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(isN(d,'allergies','nieznane'))p.push('Alergie nieznane');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
+  if(h(d,'dnr')&&d.dnr!=='brak informacji o DNR'&&d.dnr!=='nie dotyczy')p.push(cap(d.dnr));
+  return J(p)+'.';
+},genO:function(d){return'';},
+warn:function(d){var w=[];if(!h(d,'witnessed'))w.push('Brak info czy NZK obserwowane');if(!h(d,'bystander_cpr'))w.push('Brak info o RKO świadków');if(!h(d,'probable_cause'))w.push('Brak podejrzewanej przyczyny');if(!h(d,'est_time_arrest'))w.push('Brak szacowanego czasu NZK');if(!h(d,'chronic'))w.push('Brak wywiadu');return w;}
+},
+
+// NADCIŚNIENIE
+hypertension:{steps:[
+  {id:"c",title:"Okoliczności",fields:[
+    {id:"onset",label:"Początek objawów",type:"single",options:["nagły","stopniowy (godziny)","narastający od dni","pacjent zauważył wysokie wartości przy pomiarze"]},
+    {id:"bp_values",label:"Wartości RR zmierzone przez pacjenta",type:"text",placeholder:"np. 220/120, 190/110..."},
+    {id:"context",label:"Okoliczności",type:"single",options:["przy normalnej aktywności","przy silnym stresie / emocjach","po zaprzestaniu leków","po spożyciu alkoholu","po kokainie / amfetaminie","w ciąży","bez uchwytnej przyczyny"]}
+  ]},
+  {id:"s",title:"Objawy",fields:[
+    {id:"symptoms",label:"Objawy",type:"multi",options:["silny ból głowy","ból głowy — potyliczny","ból głowy — rozlany","zawroty głowy","zaburzenia widzenia","mroczki przed oczami","nudności","wymioty","ból w klatce piersiowej","duszność","kołatanie serca","krwawienie z nosa","drgawki","splątanie / dezorientacja","niedowład / objawy ogniskowe","obrzęki kk. dolnych","lęk / niepokój","bez objawów — tylko wysokie wartości RR"]},
+    {id:"symptoms_other",label:"Inne objawy (wpisz)",type:"text",placeholder:"np. szum w uszach, ból w okolicy lędźwiowej..."}
+  ]},
+  {id:"h",title:"Wywiad",fields:[
+    {id:"ht_known",label:"Nadciśnienie",type:"single",options:["rozpoznane, leczone","rozpoznane, nieleczone","nowo rozpoznane / pierwszy epizod","nie wiadomo"]},
+    {id:"chronic",label:"Inne choroby",type:"multi",options:["cukrzyca","choroba wieńcowa","niewydolność serca","po udarze","niewydolność nerek","tętniak aorty","guz chromochłonny","preeklampsja w przeszłości","neguje inne choroby"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"medications_text",label:"Leki na stałe",type:"text",placeholder:"np. amlodipina, ramipril, hydrochlorotiazyd..."},
+    {id:"compliance",label:"Stosowanie leków",type:"single",options:["przyjmuje regularnie","odstawił samowolnie","nieregularnie","brak leków"]},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","tak (wpisz poniżej)"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}},
+    {id:"notes",label:"Uwagi",type:"text",placeholder:"np. pacjent po dializie, w ciąży 30 Hbd..."}
+  ]}
+],gen:function(d){
+  var p=['Wezwanie z powodu nadciśnienia tętniczego'];
+  if(h(d,'bp_values'))p.push('RR zmierzone przez pacjenta: '+d.bp_values.trim()+' mmHg');
+  if(h(d,'onset'))p.push('Początek: '+d.onset);
+  if(h(d,'context')&&d.context!=='bez uchwytnej przyczyny')p.push('Okoliczności: '+d.context);
+  if(h(d,'symptoms')){var s=pos(d,'symptoms');if(s.length)p.push('Objawy: '+s.join(', '));else if(isN(d,'symptoms','bez objawów'))p.push('Pacjent bez objawów podmiotowych — wysokie wartości RR przy rutynowym pomiarze');}
+  if(h(d,'symptoms_other'))p.push(d.symptoms_other.trim());
+  if(h(d,'ht_known')){var v=d.ht_known;if(v==='nowo rozpoznane / pierwszy epizod')p.push('Pierwszy epizod wysokich wartości RR w życiu');else p.push('Nadciśnienie: '+v);}
+  if(h(d,'compliance')){var c=d.compliance;if(c==='przyjmuje regularnie')p.push('Leki przyjmuje regularnie');else if(c==='odstawił samowolnie')p.push('Pacjent odstawił leki hipotensyjne samowolnie');else if(c==='nieregularnie')p.push('Nieregularne przyjmowanie leków');else if(c==='brak leków'){}}
+  if(h(d,'chronic')){var ch=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Inne choroby neguje');else if(ch.length){var ct=ch.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('Ponadto: '+ct);}}
+  else if(h(d,'chronic_other'))p.push('Ponadto: '+d.chronic_other.trim());
+  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
+  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
+  return J(p)+'.';
+},genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
+warn:function(d){var w=[];if(!h(d,'symptoms'))w.push('Brak objawów');if(!h(d,'ht_known'))w.push('Brak info czy NT rozpoznane');if(!h(d,'chronic'))w.push('Brak wywiadu');if(!h(d,'compliance'))w.push('Brak compliance');if(!h(d,'medications_text'))w.push('Brak leków');return w;}
+},
+
+trauma:{steps:[
+  {id:"m",title:"Mechanizm",fields:[
+    {id:"mechanism",label:"Mechanizm",type:"single",options:["upadek z wysokości","upadek z poziomu","upadek ze schodów","pobicie / napaść","uraz sportowy","uraz w pracy / maszyny","uraz penetrujący (nóż)","uraz penetrujący (inny)","przygniecenie","oparzenie","tonięcie","porażenie prądem","inny"]},
+    {id:"mech_det",label:"Szczegóły",type:"text",placeholder:"np. upadek z 3m na beton, uderzenie pięścią w twarz..."},
+    {id:"fall_h",label:"Wysokość upadku",type:"single",options:["< 1 m","1-3 m","3-6 m","> 6 m"]}
+  ]},
+  {id:"i",title:"Obrażenia",fields:[
+    {id:"inj_loc",label:"Lokalizacja",type:"multi",options:["głowa — sklepienie","głowa — twarz","kręgosłup szyjny","klatka piersiowa","brzuch","miednica","kk. górna prawa","kk. górna lewa","kk. dolna prawa","kk. dolna lewa","kręgosłup Th/L"]},
+    {id:"inj_type",label:"Typ",type:"multi",options:["rana tłuczona","rana cięta","rana kłuta","otarcia","krwiak / obrzęk","podejrzenie złamania","złamanie otwarte","deformacja kończyny","niestabilność klatki","bolesność brzucha","obrona mięśniowa","niestabilność miednicy","amputacja urazowa"]},
+    {id:"inj_desc",label:"Opis obrażeń (wpisz)",type:"text",placeholder:"np. rana tłuczona okolicy ciemieniowej ~4cm, złamanie otwarte piszczeli lewej..."},
+    {id:"bleeding",label:"Krwawienie",type:"single",options:["masywne — tamponada","umiarkowane","niewielkie","bez krwawienia"]},
+    {id:"spine",label:"Immobilizacja",type:"single",options:["zastosowano — mechanizm","zastosowano — ból / deficyty","nie wskazana","pacjent odmawia"]}
+  ]},
+  {id:"st",title:"Stan",fields:[
+    {id:"consciousness",label:"Świadomość",type:"single",options:["przytomny, kontakt pełny","splątany","senny","reaguje na ból","nieprzytomny"]},
+    {id:"pain_nrs",label:"NRS",type:"single",options:["1-3 łagodny","4-6 umiarkowany","7-8 silny","9-10 najsilniejszy","nie ocenia"]},
+    {id:"shock_signs",label:"Cechy wstrząsu",type:"multi",options:["bladość powłok","zimne poty","tachykardia","hipotonia","tachypnoe","wydłużony powrót włośniczkowy","zaburzenia świadomości","bez cech wstrząsu"]},
+    {id:"motor",label:"Czucie / ruch kończyn",type:"single",options:["zachowane","niedowład kk. dolnych","tetrapareza","zaburzenia czucia poniżej urazu","nie do oceny"]}
+  ]},
+  {id:"h",title:"Wywiad",fields:[
+    {id:"chronic",label:"Choroby",type:"multi",options:["nadciśnienie","cukrzyca","zaburzenia krzepnięcia","padaczka","osteoporoza","endoproteza","neguje choroby przewlekłe"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"anticoag",label:"Antykoagulacja",type:"text",placeholder:"np. warfaryna, riwaroksaban..."},
+    {id:"medications_text",label:"Inne leki",type:"text",placeholder:""},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","tak (wpisz poniżej)"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}},
+    {id:"etoh",label:"Trzeźwość",type:"single",options:["trzeźwy wg deklaracji","podejrzenie upojenia","potwierdzone spożycie alkoholu","pod wpływem narkotyków","brak oceny"]},
+    {id:"tetanus",label:"Tężec",type:"single",options:["< 5 lat","5-10 lat","> 10 lat","nie pamięta"]},
+    {id:"notes",label:"Uwagi",type:"text",placeholder:""}
+  ]}
+],gen:function(d){
+  var p=[];if(h(d,'mechanism'))p.push('Poszkodowany — '+d.mechanism);else p.push('Wezwanie do poszkodowanego');
+  if(h(d,'mech_det'))p.push(d.mech_det.trim());if(h(d,'fall_h'))p.push('Wysokość: '+d.fall_h);
+  if(h(d,'consciousness'))p.push('Świadomość: '+d.consciousness);
+  if(h(d,'inj_loc'))p.push('Obrażenia w obrębie: '+d.inj_loc.join(', '));
+  if(h(d,'inj_type'))p.push('Stwierdzone: '+d.inj_type.join(', '));
+  if(h(d,'inj_desc'))p.push(d.inj_desc.trim());
+  if(h(d,'bleeding')&&!isN(d,'bleeding','bez '))p.push('Krwawienie: '+d.bleeding);
+  if(h(d,'shock_signs')){var sh=pos(d,'shock_signs');if(sh.length)p.push('Cechy wstrząsu: '+sh.join(', '));else if(isN(d,'shock_signs','bez cech'))p.push('Bez cech wstrząsu');}
+  if(h(d,'motor')&&d.motor!=='zachowane'&&d.motor!=='nie do oceny')p.push(cap(d.motor));
+  var n=nrs(d,'pain_nrs');if(n)p.push(n);
+  if(h(d,'spine')&&!isN(d,'spine','nie wskazana'))p.push('Immobilizacja: '+d.spine);
+  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
+  if(h(d,'anticoag'))p.push('Antykoagulacja: '+d.anticoag.trim());
+  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
+  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
+  if(h(d,'etoh')){var v=d.etoh;if(v==='trzeźwy wg deklaracji')p.push('Trzeźwy wg deklaracji');else if(v==='brak oceny')p.push('Ocena trzeźwości niemożliwa');else p.push(cap(v));}
+  if(h(d,'tetanus')&&d.tetanus!=='nie pamięta')p.push('Tężec: '+d.tetanus);
+  return J(p)+'.';
+},genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
+warn:function(d){var w=[];if(!h(d,'mechanism'))w.push('Brak mechanizmu');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'inj_loc'))w.push('Brak lokalizacji');if(!h(d,'bleeding'))w.push('Brak krwawienia');if(!h(d,'spine'))w.push('Brak immobilizacji');if(!h(d,'chronic'))w.push('Brak wywiadu');return w;}
+},
+
+// WYPADEK KOMUNIKACYJNY
+traffic:{steps:[
+  {id:"m",title:"Mechanizm",fields:[
+    {id:"role",label:"Rola poszkodowanego",type:"single",options:["kierowca samochodu","pasażer — przód","pasażer — tył","pieszy potrącony","rowerzysta","motocyklista","kierowca ciężarówki / TIR","pasażer autobusu","hulajnoga elektryczna"]},
+    {id:"collision",label:"Typ zderzenia",type:"single",options:["czołowe","boczne — strona kierowcy","boczne — strona pasażera","tylne","dachowanie","najechanie na przeszkodę","wypadnięcie z pojazdu","potrącenie na przejściu","potrącenie poza przejściem","zderzenie z rowerzystą/motocyklistą"]},
+    {id:"speed",label:"Szacowana prędkość",type:"single",options:["niska < 30 km/h","średnia 30-60 km/h","wysoka 60-100 km/h","bardzo wysoka > 100 km/h","nieznana"]},
+    {id:"safety",label:"Zabezpieczenia",type:"multi",options:["pasy zapięte","pasy niezapięte","airbag wystrzelił","airbag nie wystrzelił","fotelik dziecięcy","kask","brak zabezpieczeń"]},
+    {id:"extrication",label:"Wydobycie z pojazdu",type:"single",options:["sam opuścił pojazd","wyciągnięty przez świadków","wydobyty przez PSP (narzędzia hydrauliczne)","zakleszczony — nadal w pojeździe","wyrzucony z pojazdu","nie dotyczy"]},
+    {id:"mech_det",label:"Szczegóły",type:"text",placeholder:"np. deformacja kabiny, zniszczenie kierownicy, odłamki szyb..."},
+    {id:"other_victims",label:"Inne ofiary",type:"single",options:["brak innych poszkodowanych","są inni poszkodowani — lekko ranni","są inni ciężko poszkodowani","osoba/osoby zmarłe na miejscu","nieznane"]}
+  ]},
+  {id:"i",title:"Obrażenia",fields:[
+    {id:"inj_loc",label:"Lokalizacja",type:"multi",options:["głowa — sklepienie","głowa — twarz","kręgosłup szyjny","klatka piersiowa","brzuch","miednica","kk. górna P","kk. górna L","kk. dolna P","kk. dolna L","kręgosłup Th/L","wielonarządowe"]},
+    {id:"inj_type",label:"Typ",type:"multi",options:["rana tłuczona","rana cięta (szkło)","otarcia","krwiak / obrzęk","podejrzenie złamania","złamanie otwarte","deformacja kończyny","niestabilność klatki","odma podskórna","bolesność brzucha","obrona mięśniowa","niestabilność miednicy","amputacja urazowa","oparzenie"]},
+    {id:"inj_desc",label:"Opis obrażeń (wpisz)",type:"text",placeholder:"np. rana tłuczona czoła ~3cm, deformacja podudzia P..."},
+    {id:"bleeding",label:"Krwawienie",type:"single",options:["masywne","umiarkowane","niewielkie","bez krwawienia"]},
+    {id:"spine",label:"Immobilizacja kręgosłupa",type:"single",options:["zastosowano — mechanizm wysokoenergetyczny","zastosowano — ból kręgosłupa","zastosowano — zaburzenia świadomości","nie wskazana","pacjent odmawia"]}
+  ]},
+  {id:"st",title:"Stan",fields:[
+    {id:"consciousness",label:"Świadomość",type:"single",options:["przytomny, kontakt pełny","przytomny, splątany","utrata przytomności na miejscu — odzyskał","senny","reaguje na ból","nieprzytomny"]},
+    {id:"amnesia",label:"Amnezja",type:"single",options:["nie — pamięta zdarzenie","amnezja wsteczna","amnezja następcza","nie do oceny"]},
+    {id:"pain_nrs",label:"NRS",type:"single",options:["1-3 łagodny","4-6 umiarkowany","7-8 silny","9-10 najsilniejszy","nie ocenia"]},
+    {id:"shock_signs",label:"Cechy wstrząsu",type:"multi",options:["bladość powłok","zimne poty","tachykardia","hipotonia","tachypnoe","wydłużony powrót włośniczkowy","bez cech wstrząsu"]},
+    {id:"motor",label:"Czucie / ruch",type:"single",options:["zachowane","niedowład kk. dolnych","tetrapareza","zaburzenia czucia","nie do oceny"]}
+  ]},
+  {id:"h",title:"Wywiad",fields:[
+    {id:"chronic",label:"Choroby",type:"multi",options:["nadciśnienie","cukrzyca","padaczka","zaburzenia krzepnięcia","choroba wieńcowa","neguje choroby przewlekłe","wywiad niedostępny"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"anticoag",label:"Antykoagulacja",type:"text",placeholder:"np. warfaryna, riwaroksaban..."},
+    {id:"medications_text",label:"Inne leki",type:"text",placeholder:""},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","tak (wpisz poniżej)","nieznane"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}},
+    {id:"etoh",label:"Trzeźwość",type:"single",options:["trzeźwy wg deklaracji","podejrzenie upojenia","wyczuwalny zapach alkoholu","pod wpływem narkotyków","brak oceny"]},
+    {id:"notes",label:"Uwagi",type:"text",placeholder:"np. SOP na miejscu, LPR wezwany, dzieci w pojeździe..."}
+  ]}
+],gen:function(d){
+  var p=['Wezwanie do wypadku komunikacyjnego'];
+  if(h(d,'role'))p.push('Poszkodowany: '+d.role);
+  if(h(d,'collision'))p.push('Typ zderzenia: '+d.collision);
+  if(h(d,'speed'))p.push('Szacowana prędkość: '+d.speed);
+  if(h(d,'safety')){var s=pos(d,'safety');if(s.length)p.push('Zabezpieczenia: '+s.join(', '));}
+  if(h(d,'extrication')&&d.extrication!=='nie dotyczy')p.push(cap(d.extrication));
+  if(h(d,'mech_det'))p.push(d.mech_det.trim());
+  if(h(d,'other_victims')&&d.other_victims!=='nieznane')p.push(cap(d.other_victims));
+  if(h(d,'consciousness'))p.push('Świadomość: '+d.consciousness);
+  if(h(d,'amnesia')&&d.amnesia!=='nie do oceny'){if(d.amnesia.indexOf('nie —')>=0)p.push('Pamięta przebieg zdarzenia');else p.push(cap(d.amnesia));}
+  if(h(d,'inj_loc'))p.push('Obrażenia: '+d.inj_loc.join(', '));
+  if(h(d,'inj_type'))p.push('Stwierdzone: '+d.inj_type.join(', '));
+  if(h(d,'inj_desc'))p.push(d.inj_desc.trim());
+  if(h(d,'bleeding')&&!isN(d,'bleeding','bez '))p.push('Krwawienie: '+d.bleeding);
+  if(h(d,'shock_signs')){var sh=pos(d,'shock_signs');if(sh.length)p.push('Cechy wstrząsu: '+sh.join(', '));else if(isN(d,'shock_signs','bez cech'))p.push('Bez cech wstrząsu');}
+  if(h(d,'motor')&&d.motor!=='zachowane'&&d.motor!=='nie do oceny')p.push(cap(d.motor));
+  var n=nrs(d,'pain_nrs');if(n)p.push(n);
+  if(h(d,'spine')&&!isN(d,'spine','nie wskazana'))p.push('Immobilizacja: '+d.spine);
+  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(isN(d,'chronic','wywiad niedostępny'))p.push('Wywiad chorobowy niedostępny');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
+  if(h(d,'anticoag'))p.push('Antykoagulacja: '+d.anticoag.trim());
+  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
+  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(isN(d,'allergies','nieznane'))p.push('Alergie nieznane');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
+  if(h(d,'etoh')){var v=d.etoh;if(v==='trzeźwy wg deklaracji')p.push('Trzeźwy wg deklaracji');else if(v==='brak oceny')p.push('Ocena trzeźwości niemożliwa');else p.push(cap(v));}
+  return J(p)+'.';
+},genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
+warn:function(d){var w=[];if(!h(d,'role'))w.push('Brak roli poszkodowanego');if(!h(d,'collision'))w.push('Brak typu zderzenia');if(!h(d,'safety'))w.push('Brak zabezpieczeń');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'inj_loc'))w.push('Brak obrażeń');if(!h(d,'spine'))w.push('Brak immobilizacji');if(!h(d,'chronic'))w.push('Brak wywiadu');return w;}
+},
+
+abdominal:{steps:[
+  {id:"c",title:"Okoliczności",fields:[
+    {id:"onset",label:"Początek",type:"single",options:["nagły, sekundy","nagły, minuty","stopniowy, godziny","narastający od dni","nawracający"]},
+    {id:"duration",label:"Czas trwania",type:"single",options:["< 1 godz.","1-6 godz.","6-24 godz.","1-3 dni","> 3 dni"]},
+    {id:"context",label:"Okoliczności",type:"single",options:["po tłustym posiłku","na czczo","po alkoholu","po NLPZ","po urazie brzucha","w ciąży","w menstruacji","po operacji/zabiegu","bez uchwytnej przyczyny"]}
+  ]},
+  {id:"p",title:"Ból",fields:[
+    {id:"pain_type",label:"Charakter",type:"single",options:["kolkowy","stały tępy","ostry przeszywający","rozpierający","piekący","opasujący","kolikowy falowy"]},
+    {id:"location",label:"Lokalizacja",type:"single",options:["nadbrzusze","śródbrzusze","podbrzusze","prawe podżebrze","lewe podżebrze","prawy dół biodrowy","lewy dół biodrowy","okolica pępka","lędźwiowa P","lędźwiowa L","rozlany","nad spojeniem łonowym"]},
+    {id:"rad",label:"Promieniowanie",type:"multi",options:["do pleców","do prawego barku","do lewego barku","do pachwiny P","do pachwiny L","do krocza","nie promieniuje"]},
+    {id:"pain_nrs",label:"NRS",type:"single",options:["1-3 łagodny","4-6 umiarkowany","7-8 silny","9-10 najsilniejszy"]}
+  ]},
+  {id:"g",title:"Objawy",fields:[
+    {id:"gi",label:"Objawy z PP",type:"multi",options:["nudności","wymioty pokarmowe","wymioty żółciowe","wymioty fusowate","wymioty krwiste","biegunka","biegunka krwista","zaparcie","zatrzymanie gazów","smolce","krew w stolcu","wzdęcie","żółtaczka","bez objawów z PP"]},
+    {id:"gi_other",label:"Inne objawy (wpisz)",type:"text",placeholder:"np. czkawka, odbijanie, zgaga..."},
+    {id:"perit",label:"Badanie brzucha",type:"multi",options:["brzuch miękki, niebolesny","tkliwy palpacyjnie","obrona mięśniowa","deskowaty brzuch","Blumberg (+)","wzdęty","perystaltyka żywa","perystaltyka osłabiona","cisza nad brzuchem","Murphy (+)","opór patologiczny"]},
+    {id:"perit_other",label:"Inne w badaniu (wpisz)",type:"text",placeholder:"np. blizna pooperacyjna, przepuklina widoczna..."},
+    {id:"fever",label:"Gorączka",type:"single",options:["nie","37-38°C","gorączka > 38°C","gorączka z dreszczami","> 39°C septyczna"]},
+    {id:"urinary",label:"Objawy moczowe",type:"multi",options:["ból przy mikcji","częstomocz","krwiomocz","zatrzymanie moczu","bez objawów moczowych"]}
+  ]},
+  {id:"h",title:"Wywiad",fields:[
+    {id:"chronic",label:"Choroby",type:"multi",options:["choroba wrzodowa","kamica żółciowa","kamica nerkowa","Crohn","WZJG","uchyłkowatość","cukrzyca","nadciśnienie","nowotwór PP","po operacjach brzusznych","tętniak aorty brzusznej","marskość wątroby","neguje choroby przewlekłe"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"medications_text",label:"Leki",type:"text",placeholder:""},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","tak (wpisz poniżej)"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}},
+    {id:"substances",label:"Używki",type:"multi",options:["palenie","alkohol okazjonalnie","alkohol — nadużywanie","neguje używki"]},
+    {id:"last_meal",label:"Ostatni posiłek",type:"text",placeholder:""},
+    {id:"last_stool",label:"Ostatni stolec",type:"text",placeholder:"np. wczoraj, prawidłowy"},
+    {id:"gyn",label:"Wywiad ginekologiczny",type:"text",placeholder:"np. OM 6 tyg. temu, ciąża, antykoncepcja..."},
+    {id:"notes",label:"Uwagi",type:"text",placeholder:""}
+  ]}
+],gen:function(d){
+  var p=['Wezwanie z powodu bólu brzucha'];
+  if(h(d,'onset'))p.push('Początek: '+d.onset);if(h(d,'duration'))p.push('Trwa od '+d.duration.replace('< ','poniżej ').replace('> ','powyżej '));
+  if(h(d,'context')&&d.context!=='bez uchwytnej przyczyny')p.push('Okoliczności: '+d.context);
+  if(h(d,'pain_type'))p.push('Charakter: '+d.pain_type);if(h(d,'location'))p.push('Lokalizacja: '+d.location);
+  if(h(d,'rad')){var r=pos(d,'rad');if(r.length)p.push('Promieniuje '+r.join(', '));else if(isN(d,'rad','nie promieniuje'))p.push('Bez promieniowania');}
+  var n=nrs(d,'pain_nrs');if(n)p.push(n);
+  if(h(d,'gi')){var s=pos(d,'gi');if(s.length)p.push('Towarzyszą: '+s.join(', '));else if(isN(d,'gi','bez objawów'))p.push('Bez objawów z PP');}
+  if(h(d,'gi_other'))p.push(d.gi_other.trim());
+  if(h(d,'perit'))p.push('Badanie brzucha: '+d.perit.join(', '));
+  if(h(d,'perit_other'))p.push(d.perit_other.trim());
+  if(h(d,'fever')&&d.fever!=='nie')p.push(cap(d.fever));
+  if(h(d,'urinary')){var u=pos(d,'urinary');if(u.length)p.push('Objawy moczowe: '+u.join(', '));}
+  p=p.concat(hB(d));
+  if(h(d,'last_meal'))p.push('Ostatni posiłek: '+d.last_meal.trim());if(h(d,'last_stool'))p.push('Stolec: '+d.last_stool.trim());
+  if(h(d,'gyn'))p.push('Ginekologicznie: '+d.gyn.trim());return J(p)+'.';
+},genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
+warn:function(d){var w=[];if(!h(d,'onset'))w.push('Brak początku');if(!h(d,'pain_type'))w.push('Brak charakteru');if(!h(d,'location'))w.push('Brak lokalizacji');if(!h(d,'perit'))w.push('Brak badania brzucha');if(!h(d,'chronic'))w.push('Brak wywiadu');return w;}
+},
+
+hypoglycemia:{steps:[
+  {id:"g",title:"Glikemia",fields:[
+    {id:"gluc",label:"Glikemia (mg/dl)",type:"text",placeholder:"np. 42, 380, HI, LO"},
+    {id:"type",label:"Typ",type:"single",options:["hipoglikemia","hiperglikemia"]},
+    {id:"onset",label:"Początek",type:"single",options:["nagły","stopniowy","narastający od dni","znaleziony z objawami"]},
+    {id:"context",label:"Okoliczności",type:"single",options:["po insulinie","podwójna dawka insuliny","pominięty posiłek","po wysiłku","po alkoholu","przerwanie insuliny","przerwanie leków doustnych","infekcja / gorączka","pierwsza manifestacja cukrzycy","bez uchwytnej przyczyny"]}
+  ]},
+  {id:"s",title:"Objawy",fields:[
+    {id:"neuro",label:"Neurologiczne",type:"multi",options:["splątanie","dezorientacja","agresja / pobudzenie","drgawki","senność","utrata przytomności","zaburzenia mowy","zaburzenia widzenia","objawy ogniskowe","bez objawów neurologicznych"]},
+    {id:"neuro_other",label:"Inne objawy (wpisz)",type:"text",placeholder:""},
+    {id:"auto",label:"Wegetatywne",type:"multi",options:["zimne poty","drżenie rąk","bladość","kołatanie serca","głód","nudności","wymioty","ból brzucha","pragnienie","wielomocz","suchość śluzówek","Kussmaul","zapach acetonu","osłabienie","bez objawów wegetatywnych"]},
+    {id:"consciousness",label:"Świadomość",type:"single",options:["przytomny, kontakt pełny","splątany","agresywny","senny","reaguje na ból","nieprzytomny"]}
+  ]},
+  {id:"h",title:"Wywiad cukrzycowy",fields:[
+    {id:"dm_type",label:"Typ",type:"single",options:["cukrzyca typu 1","cukrzyca typu 2","cukrzyca ciążowa","typ nieznany","brak rozpoznanej cukrzycy"]},
+    {id:"dm_tx",label:"Leczenie",type:"multi",options:["insulina — pompa","insulina — peny intensywna","insulina — mieszanki","metformina","sulfonylomocznik","flozyny (SGLT2)","GLP-1","DPP-4","brak farmakoterapii"]},
+    {id:"ins_text",label:"Schemat insuliny",type:"text",placeholder:"np. Lantus 22j, NovoRapid 6-8-6j"},
+    {id:"last_ins",label:"Ostatnie podanie",type:"text",placeholder:"np. dziś rano Lantus 22j"},
+    {id:"hypos",label:"Hipoglikemie",type:"single",options:["częste, kilka/mies.","sporadyczne","pierwszy epizod","ciężkie w przeszłości","bez hipoglikemii"]},
+    {id:"chronic",label:"Inne choroby",type:"multi",options:["nadciśnienie","choroba wieńcowa","niewydolność nerek","retinopatia","polineuropatia","stopa cukrzycowa","neguje inne choroby"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","tak (wpisz poniżej)"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}},
+    {id:"last_meal",label:"Ostatni posiłek",type:"text",placeholder:""},
+    {id:"notes",label:"Uwagi",type:"text",placeholder:""}
+  ]}
+],gen:function(d){
+  var p=[];if(d.type==='hipoglikemia')p.push('Wezwanie z powodu hipoglikemii');else if(d.type==='hiperglikemia')p.push('Wezwanie z powodu hiperglikemii');else p.push('Wezwanie — zaburzenia glikemii');
+  if(h(d,'gluc'))p.push('Glikemia: '+d.gluc.trim()+' mg/dl');
+  if(h(d,'onset'))p.push('Początek: '+d.onset);if(h(d,'context')&&d.context!=='bez uchwytnej przyczyny')p.push('Okoliczności: '+d.context);
+  if(h(d,'consciousness'))p.push('Świadomość: '+d.consciousness);
+  if(h(d,'neuro')){var s=pos(d,'neuro');if(s.length)p.push('Neurologicznie: '+s.join(', '));}
+  if(h(d,'neuro_other'))p.push(d.neuro_other.trim());
+  if(h(d,'auto')){var s2=pos(d,'auto');if(s2.length)p.push('Wegetatywnie: '+s2.join(', '));}
+  if(h(d,'dm_type')){if(d.dm_type==='brak rozpoznanej cukrzycy')p.push('Dotychczas bez rozpoznania cukrzycy');else p.push(cap(d.dm_type));}
+  if(h(d,'dm_tx')){var t=pos(d,'dm_tx');if(t.length)p.push('Leczenie: '+t.join(', '));else if(isN(d,'dm_tx','brak '))p.push('Bez farmakoterapii hipoglikemizującej');}
+  if(h(d,'ins_text'))p.push('Schemat: '+d.ins_text.trim());if(h(d,'last_ins'))p.push('Ostatnie podanie: '+d.last_ins.trim());
+  if(h(d,'hypos')&&!isN(d,'hypos','bez hipoglikemii'))p.push('Hipoglikemie: '+d.hypos);
+  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Inne choroby neguje');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('Ponadto: '+ct);}}
+  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
+  if(h(d,'last_meal'))p.push('Ostatni posiłek: '+d.last_meal.trim());return J(p)+'.';
+},genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
+warn:function(d){var w=[];if(!h(d,'gluc'))w.push('KRYTYCZNE: Brak glikemii');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'dm_type'))w.push('Brak typu cukrzycy');if(!h(d,'dm_tx'))w.push('Brak leczenia');if(!h(d,'last_ins'))w.push('Brak ostatniego podania');if(!h(d,'last_meal'))w.push('Brak posiłku');return w;}
+},
+
+allergy:{steps:[
+  {id:"t",title:"Przyczyna",fields:[
+    {id:"trigger",label:"Alergen",type:"single",options:["pokarm","lek doustny","lek dożylny","antybiotyk","NLPZ","kontrast","użądlenie osy","użądlenie pszczoły","użądlenie inne","lateks","alergen wziewny","wysiłek fizyczny","nieznany"]},
+    {id:"trig_det",label:"Co dokładnie?",type:"text",placeholder:"np. orzeszki, amoksycylina..."},
+    {id:"time_onset",label:"Czas od ekspozycji",type:"single",options:["< 5 min","5-15 min","15-30 min","30-60 min","> 1 godz."]},
+    {id:"prev_react",label:"Wcześniejsze reakcje",type:"single",options:["na ten sam — łagodna","na ten sam — ciężka","na inne alergeny","pierwszy raz"]}
+  ]},
+  {id:"s",title:"Objawy",fields:[
+    {id:"skin",label:"Skóra",type:"multi",options:["pokrzywka uogólniona","pokrzywka ograniczona","rumień","obrzęk twarzy","obrzęk warg","obrzęk języka","obrzęk gardła","obrzęk powiek","świąd uogólniony","bez objawów skórnych"]},
+    {id:"skin_other",label:"Inne objawy skórne (wpisz)",type:"text",placeholder:"np. obrzęk dłoni, zaczerwienienie szyi..."},
+    {id:"resp",label:"Oddechowe",type:"multi",options:["duszność","duszność narastająca","świst wydechowy","stridor","chrypka","obrzęk krtani","kaszel","uczucie duszenia","kichanie / katar","bez objawów oddechowych"]},
+    {id:"cardio",label:"Krążeniowe",type:"multi",options:["tachykardia","bradykardia","hipotonia","wstrząs","zawroty głowy","omdlenie","bladość","zimne poty","bez objawów krążeniowych"]},
+    {id:"gi_a",label:"PP",type:"multi",options:["nudności","wymioty","ból brzucha","biegunka","bez objawów z PP"]},
+    {id:"severity",label:"Ciężkość",type:"single",options:["łagodna — tylko skóra","umiarkowana — skóra + 1 układ","ciężka — anafilaksja ≥ 2 układy","zagrażająca życiu — wstrząs / niewydolność oddechowa"]}
+  ]},
+  {id:"h",title:"Wywiad",fields:[
+    {id:"known_all",label:"Znane alergie",type:"text",placeholder:"np. penicyliny, orzechy, jad os..."},
+    {id:"epipen",label:"Autoinjektor",type:"single",options:["użył przed ZRM","posiada — nie użył","nie posiada"]},
+    {id:"chronic",label:"Choroby",type:"multi",options:["astma","POChP","choroba wieńcowa","mastocytoza","beta-bloker w lekach","neguje choroby przewlekłe"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"medications_text",label:"Leki",type:"text",placeholder:""},
+    {id:"notes",label:"Uwagi",type:"text",placeholder:""}
+  ]}
+],gen:function(d){
+  var p=[];if(h(d,'severity')&&(isN(d,'severity','anafilaksja')||isN(d,'severity','wstrząs')))p.push('Wezwanie z powodu anafilaksji');else p.push('Wezwanie — reakcja alergiczna');
+  if(h(d,'trigger')&&d.trigger!=='nieznany')p.push('Alergen: '+d.trigger);else if(d.trigger==='nieznany')p.push('Alergen nieustalony');
+  if(h(d,'trig_det'))p.push('Szczegóły: '+d.trig_det.trim());
+  if(h(d,'time_onset'))p.push('Czas od ekspozycji: '+d.time_onset);
+  if(h(d,'severity'))p.push('Ciężkość: '+d.severity);
+  if(h(d,'skin')){var s=pos(d,'skin');if(s.length)p.push('Skóra: '+s.join(', '));}
+  if(h(d,'skin_other'))p.push(d.skin_other.trim());
+  if(h(d,'resp')){var s2=pos(d,'resp');if(s2.length)p.push('Oddechowe: '+s2.join(', '));}
+  if(h(d,'cardio')){var s3=pos(d,'cardio');if(s3.length)p.push('Krążeniowe: '+s3.join(', '));}
+  if(h(d,'gi_a')){var s4=pos(d,'gi_a');if(s4.length)p.push('PP: '+s4.join(', '));}
+  if(h(d,'prev_react'))p.push('Wcześniejsze reakcje: '+d.prev_react);
+  if(h(d,'known_all'))p.push('Znane alergie: '+d.known_all.trim());
+  if(h(d,'epipen')){if(d.epipen==='użył przed ZRM')p.push('Użył autoinjektora adrenaliny przed ZRM');else if(d.epipen==='posiada — nie użył')p.push('Posiada autoinjektor — nie użył');else p.push('Nie posiada autoinjektora');}
+  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
+  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());return J(p)+'.';
+},genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
+warn:function(d){var w=[];if(!h(d,'trigger'))w.push('Brak alergenu');if(!h(d,'severity'))w.push('Brak ciężkości');if(!h(d,'skin')&&!h(d,'resp')&&!h(d,'cardio'))w.push('Brak objawów');if(!h(d,'epipen'))w.push('Brak info o autoinjektorze');if(h(d,'chronic')&&isN(d,'chronic','astma'))w.push('UWAGA: Astma — ryzyko ciężkiej anafilaksji');if(h(d,'chronic')&&isN(d,'chronic','beta-bloker'))w.push('UWAGA: Beta-bloker — osłabiona odpowiedź na adrenalinę');return w;}
+},
+
+// CIĄŻA
+pregnancy:{steps:[
+  {id:"c",title:"Okoliczności",fields:[
+    {id:"reason",label:"Powód wezwania",type:"single",options:["czynność skurczowa / poród","krwawienie z dróg rodnych","odpłynięcie płynu owodniowego","silny ból brzucha","drgawki / rzucawka","wysokie ciśnienie tętnicze","utrata przytomności / omdlenie","uraz w ciąży","wymioty nieustępujące","gorączka w ciąży"]},
+    {id:"gest_age",label:"Tydzień ciąży",type:"single",options:["< 12 Hbd (I trymestr)","12-20 Hbd","20-28 Hbd","28-34 Hbd","34-37 Hbd","37-40 Hbd","> 40 Hbd","nie zna tygodnia ciąży"]},
+    {id:"gravida",label:"Która ciąża",type:"single",options:["pierwsza (Ip)","druga (IIp)","trzecia (IIIp)","wieloródka (> IIIp)","nie podaje"]},
+    {id:"pregnancy_type",label:"Typ ciąży",type:"single",options:["pojedyncza","bliźniacza","potrójna","nie wiadomo"]}
+  ]},
+  {id:"s",title:"Objawy",fields:[
+    {id:"contractions",label:"Skurcze",type:"single",options:["regularne co < 5 min","regularne co 5-10 min","nieregularne","brak skurczów"]},
+    {id:"bleeding",label:"Krwawienie",type:"single",options:["masywne — zamoczenie > 2 podkładów","umiarkowane","skąpe / plamienie","śluzowo-krwisty czop","bez krwawienia"]},
+    {id:"fluid",label:"Płyn owodniowy",type:"single",options:["odpłynął — czysty","odpłynął — zielony / cuchnący","odpłynął — krwisty","nie odpłynął","nie wiadomo"]},
+    {id:"pushing",label:"Parcie",type:"single",options:["silne parcie na stolec","główka widoczna w kanale rodnym","poród w toku — wymaga asysty","brak parcia"]},
+    {id:"fetal_mvmt",label:"Ruchy płodu",type:"single",options:["prawidłowe wg matki","osłabione / mniej niż zwykle","brak ruchów","za wcześnie na odczuwanie"]},
+    {id:"symptoms",label:"Objawy towarzyszące",type:"multi",options:["silny ból głowy","zaburzenia widzenia","mroczki","obrzęki twarzy / rąk","obrzęki kk. dolnych","nudności / wymioty","gorączka","ból w nadbrzuszu","ból w podbrzuszu","duszność","kołatanie serca","omdlenie","drgawki","bez objawów towarzyszących"]},
+    {id:"symptoms_other",label:"Inne objawy (wpisz)",type:"text",placeholder:""}
+  ]},
+  {id:"h",title:"Wywiad położniczy",fields:[
+    {id:"complications",label:"Powikłania tej ciąży",type:"multi",options:["nadciśnienie ciążowe","preeklampsja","cukrzyca ciążowa","łożysko przodujące","odklejenie łożyska","niewydolność szyjki","przedwczesne pęknięcie błon","IUGR","cholestaza ciążowa","ciąża po IVF","bez powikłań"]},
+    {id:"complications_other",label:"Inne powikłania (wpisz)",type:"text",placeholder:"np. małowodzie, zakażenie dróg moczowych..."},
+    {id:"prev_births",label:"Przebieg poprzednich porodów",type:"multi",options:["poród drogami natury — bez powikłań","poród operacyjny (CC)","poród przedwczesny","poród zabiegowy (VE / kleszcze)","poronienie","ciąża pozamaciczna","krwotok poporodowy","rzucawka w przeszłości","nie dotyczy — pierwsza ciąża"]},
+    {id:"chronic",label:"Choroby przewlekłe matki",type:"multi",options:["nadciśnienie przewlekłe","cukrzyca przedciążowa","padaczka","choroby tarczycy","astma","choroba autoimmunologiczna","trombofilia","neguje choroby przewlekłe"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"medications_text",label:"Leki",type:"text",placeholder:"np. metyldopa, insulina, progesteron, kwas foliowy..."},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","tak (wpisz poniżej)"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}},
+    {id:"blood_type",label:"Grupa krwi",type:"single",options:["0 Rh+","0 Rh-","A Rh+","A Rh-","B Rh+","B Rh-","AB Rh+","AB Rh-","nie zna"]},
+    {id:"notes",label:"Uwagi",type:"text",placeholder:"np. karta ciąży przy pacjentce, planowane CC na przyszły tydzień..."}
+  ]}
+],gen:function(d){
+  var p=[];if(h(d,'reason'))p.push('Wezwanie do ciężarnej — '+d.reason);else p.push('Wezwanie do ciężarnej');
+  if(h(d,'gest_age'))p.push('Tydzień ciąży: '+d.gest_age);
+  if(h(d,'gravida')&&d.gravida!=='nie podaje')p.push('Ciąża: '+d.gravida);
+  if(h(d,'pregnancy_type')&&d.pregnancy_type!=='nie wiadomo'&&d.pregnancy_type!=='pojedyncza')p.push('Ciąża '+d.pregnancy_type);
+  if(h(d,'contractions')&&d.contractions!=='brak skurczów')p.push('Skurcze: '+d.contractions);
+  if(h(d,'bleeding')&&!isN(d,'bleeding','bez krwawienia'))p.push('Krwawienie: '+d.bleeding);
+  if(h(d,'fluid')&&d.fluid!=='nie odpłynął'&&d.fluid!=='nie wiadomo')p.push('Płyn owodniowy: '+d.fluid);
+  if(h(d,'pushing')&&d.pushing!=='brak parcia')p.push(cap(d.pushing));
+  if(h(d,'fetal_mvmt')&&d.fetal_mvmt!=='za wcześnie na odczuwanie'){if(d.fetal_mvmt==='prawidłowe wg matki')p.push('Ruchy płodu odczuwane prawidłowo');else p.push('Ruchy płodu: '+d.fetal_mvmt);}
+  if(h(d,'symptoms')){var s=pos(d,'symptoms');if(s.length)p.push('Towarzyszą: '+s.join(', '));}
+  if(h(d,'symptoms_other'))p.push(d.symptoms_other.trim());
+  if(h(d,'complications')){var c=pos(d,'complications');if(c.length){var ct=c.join(', ');if(h(d,'complications_other'))ct+=', '+d.complications_other.trim();p.push('Powikłania ciąży: '+ct);}else if(isN(d,'complications','bez powikłań'))p.push('Ciąża dotychczas niepowikłana');}
+  else if(h(d,'complications_other'))p.push('Powikłania ciąży: '+d.complications_other.trim());
+  if(h(d,'prev_births')){var b=pos(d,'prev_births');if(b.length)p.push('Poprzednie porody: '+b.join(', '));}
+  if(h(d,'chronic')){var ch=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Matka neguje choroby przewlekłe');else if(ch.length){var ct2=ch.join(', ');if(h(d,'chronic_other'))ct2+=', '+d.chronic_other.trim();p.push('Choroby matki: '+ct2);}}
+  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
+  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
+  if(h(d,'blood_type')&&d.blood_type!=='nie zna')p.push('Grupa krwi: '+d.blood_type);
+  return J(p)+'.';
+},genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
+warn:function(d){var w=[];if(!h(d,'gest_age'))w.push('KRYTYCZNE: Brak tygodnia ciąży');if(!h(d,'reason'))w.push('Brak powodu wezwania');if(!h(d,'bleeding'))w.push('Brak oceny krwawienia');if(!h(d,'contractions'))w.push('Brak oceny skurczów');if(!h(d,'fetal_mvmt'))w.push('Brak oceny ruchów płodu');if(!h(d,'complications'))w.push('Brak powikłań ciąży');if(!h(d,'chronic'))w.push('Brak chorób matki');if(!h(d,'blood_type'))w.push('Brak grupy krwi');return w;}
+},
+
+// GORĄCZKA
+fever:{steps:[
+  {id:"c",title:"Okoliczności",fields:[
+    {id:"age_group",label:"Grupa wiekowa",type:"single",options:["noworodek (< 28 dni)","niemowlę (1-12 mies.)","dziecko 1-5 lat","dziecko 6-12 lat","nastolatek 13-17 lat","dorosły","senior > 65 lat","senior > 80 lat"]},
+    {id:"temp_value",label:"Temperatura zmierzona",type:"text",placeholder:"np. 39.2°C, 40.1°C"},
+    {id:"fever_duration",label:"Czas trwania gorączki",type:"single",options:["od kilku godzin","1 dzień","2-3 dni","4-7 dni","> 7 dni"]},
+    {id:"antipyretics",label:"Leki przeciwgorączkowe",type:"single",options:["paracetamol — pomógł","paracetamol — bez efektu","ibuprofen — pomógł","ibuprofen — bez efektu","naprzemiennie paracetamol/ibuprofen","nie podawano","nie dotyczy (dorosły bez leków)"]}
+  ]},
+  {id:"s",title:"Objawy towarzyszące",fields:[
+    {id:"symptoms",label:"Objawy",type:"multi",options:["kaszel","katar","ból gardła","ból ucha","duszność","świsty","biegunka","wymioty","ból brzucha","ból głowy","sztywność karku","wysypka","wybroczyny / petechie","splątanie / dezorientacja","drgawki gorączkowe","senność patologiczna","drażliwość / płaczliwość (dziecko)","odmowa jedzenia / picia","suchość śluzówek / mało moczu","dreszcze","zimne poty","bóle mięśniowe","ból przy oddawaniu moczu","krwiomocz","ból w okolicy lędźwiowej","obrzęk / zaczerwienienie stawu","rana / ropień","bez dodatkowych objawów"]},
+    {id:"symptoms_other",label:"Inne objawy (wpisz)",type:"text",placeholder:""},
+    {id:"consciousness",label:"Świadomość",type:"single",options:["przytomny, kontakt prawidłowy","drażliwy, płaczliwy (dziecko)","senny, ale budzi się","reaguje na ból","nieprzytomny"]},
+    {id:"hydration",label:"Nawodnienie",type:"single",options:["prawidłowe — pije, oddaje mocz","umiarkowane odwodnienie — mało pije, suche śluzówki","ciężkie odwodnienie — nie pije, brak moczu, apatia","nie do oceny"]}
+  ]},
+  {id:"h",title:"Wywiad",fields:[
+    {id:"chronic",label:"Choroby przewlekłe",type:"multi",options:["astma","wada serca wrodzona","immunosupresja","onkologia / chemioterapia","cukrzyca","niewydolność nerek","POCHP","choroby autoimmunologiczne","HIV","po splenektomii","DPS / ZOL — zakażenia nawracające","neguje choroby przewlekłe"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"medications_text",label:"Leki",type:"text",placeholder:"np. antybiotyk od 2 dni, sterydy, immunosupresja..."},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","tak (wpisz poniżej)"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}},
+    {id:"vaccinations",label:"Szczepienia (dzieci)",type:"single",options:["szczepione wg kalendarza","nieszczepione","niepełne szczepienia","nie dotyczy (dorosły)"]},
+    {id:"contacts",label:"Kontakt z chorymi / podróże",type:"multi",options:["kontakt z osobą gorączkującą","ognisko chorobowe w przedszkolu / szkole","ognisko w DPS / ZOL","podróż zagraniczna w ostatnich 2 tyg.","kontakt ze zwierzętami","ukąszenie kleszcza","brak istotnych kontaktów"]},
+    {id:"notes",label:"Uwagi",type:"text",placeholder:"np. po operacji 5 dni temu, obecny cewnik centralny, antybiotyk od 3 dni bez poprawy..."}
+  ]}
+],gen:function(d){
+  var p=[];if(h(d,'age_group'))p.push('Wezwanie do gorączkującego pacjenta — '+d.age_group);else p.push('Wezwanie z powodu gorączki');
+  if(h(d,'temp_value'))p.push('Temperatura: '+d.temp_value.trim());
+  if(h(d,'fever_duration'))p.push('Gorączka trwa: '+d.fever_duration);
+  if(h(d,'antipyretics')&&!isN(d,'antipyretics','nie dotyczy')){if(isN(d,'antipyretics','nie podawano'))p.push('Leków przeciwgorączkowych nie podawano');else p.push(cap(d.antipyretics));}
+  if(h(d,'consciousness'))p.push('Świadomość: '+d.consciousness);
+  if(h(d,'hydration')&&d.hydration!=='nie do oceny')p.push('Nawodnienie: '+d.hydration);
+  if(h(d,'symptoms')){var s=pos(d,'symptoms');if(s.length)p.push('Objawy: '+s.join(', '));}
+  if(h(d,'symptoms_other'))p.push(d.symptoms_other.trim());
+  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(c.length){var ct2=c.join(', ');if(h(d,'chronic_other'))ct2+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct2);}}
+  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
+  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
+  if(h(d,'vaccinations')&&!isN(d,'vaccinations','nie dotyczy')){if(d.vaccinations==='szczepione wg kalendarza')p.push('Dziecko szczepione wg kalendarza');else p.push('Szczepienia: '+d.vaccinations);}
+  if(h(d,'contacts')){var ct=pos(d,'contacts');if(ct.length)p.push('Ekspozycje: '+ct.join(', '));}
+  return J(p)+'.';
+},genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
+warn:function(d){var w=[];if(!h(d,'age_group'))w.push('Brak grupy wiekowej');if(!h(d,'temp_value'))w.push('Brak temperatury');if(!h(d,'symptoms'))w.push('Brak objawów');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'hydration'))w.push('Brak oceny nawodnienia');if(!h(d,'chronic'))w.push('Brak wywiadu');
+  if(h(d,'age_group')&&(isN(d,'age_group','noworodek')||isN(d,'age_group','niemowlę')))w.push('UWAGA: Gorączka u noworodka / niemowlęcia — zawsze pilna diagnostyka');
+  if(h(d,'symptoms')&&isN(d,'symptoms','wybroczyny'))w.push('UWAGA: Wybroczyny + gorączka — wykluczyć meningokokemię');
+  if(h(d,'symptoms')&&isN(d,'symptoms','sztywność karku'))w.push('UWAGA: Sztywność karku — podejrzenie zapalenia opon');
+  return w;}
+},
+
+// UPOJENIE ALKOHOLOWE
+alcohol:{steps:[
+  {id:"c",title:"Okoliczności",fields:[
+    {id:"reason",label:"Powód wezwania",type:"single",options:["upojenie alkoholowe — osoba leży","upojenie alkoholowe — agresja","upojenie alkoholowe — uraz","zatrucie alkoholem (podejrzenie metanolu/glikolu)","zespół odstawienia","majaczenie alkoholowe (delirium tremens)","drgawki alkoholowe","przewlekła choroba alkoholowa — pogorszenie"]},
+    {id:"who_called",label:"Kto wezwał",type:"single",options:["przypadkowy świadek","rodzina","policja","sam pacjent","personel izby wytrzeźwień","personel DPS / noclegowni"]},
+    {id:"where",label:"Gdzie znaleziony",type:"single",options:["mieszkanie / dom","ulica / park","klatka schodowa","lokal gastronomiczny","miejsce pracy","izba wytrzeźwień","inne"]},
+    {id:"alcohol_type",label:"Rodzaj alkoholu",type:"single",options:["piwo","wódka / whisky","wino","alkohol niewiadomego pochodzenia","podejrzenie metanolu / glikolu","nieznany"]},
+    {id:"amount",label:"Ilość",type:"text",placeholder:"np. ok. 0.5l wódki, kilka piw, nieznana ilość..."},
+    {id:"last_drink",label:"Ostatnie spożycie",type:"text",placeholder:"np. ok. 2 godz. temu, pije od rana"}
+  ]},
+  {id:"s",title:"Stan",fields:[
+    {id:"consciousness",label:"Świadomość",type:"single",options:["przytomny, kontaktowy","przytomny, kontakt utrudniony","przytomny, bełkotliwy, niekontaktowy","senny — budzi się na głos","senny — budzi się na ból","nieprzytomny"]},
+    {id:"behavior",label:"Zachowanie",type:"multi",options:["spokojny, współpracujący","euforyczny","pobudzony","agresywny werbalnie","agresywny fizycznie","płaczliwy","apatyczny / wycofany","leży, nie reaguje na otoczenie"]},
+    {id:"symptoms",label:"Objawy",type:"multi",options:["wymioty","nudności","ból głowy","zawroty głowy","ból brzucha","biegunka","uraz głowy — rana / krwiak","uraz twarzoczaszki","inne obrażenia widoczne","drgawki","drżenie rąk / ciała","omamy wzrokowe","omamy słuchowe","splątanie","pocenie się","gorączka","hipotermia","zaburzenia widzenia (metanol)","bez widocznych obrażeń","bez dodatkowych objawów"]},
+    {id:"symptoms_other",label:"Inne objawy (wpisz)",type:"text",placeholder:"np. rana na potylicy, obrzęk stawu skokowego..."},
+    {id:"airway",label:"Drogi oddechowe",type:"single",options:["drożne, oddech prawidłowy","zagrożone — wymioty / ślinotok","zagrożone — obniżony poziom świadomości","niedrożne — wymagają udrożnienia"]}
+  ]},
+  {id:"h",title:"Wywiad",fields:[
+    {id:"alcohol_hist",label:"Wywiad alkoholowy",type:"single",options:["pije okazjonalnie","pije regularnie / nałogowo","uzależnienie rozpoznane","w trakcie leczenia odwykowego","po detoksie — nawrót","wielodniowy ciąg alkoholowy","odmawia informacji"]},
+    {id:"withdrawal_hist",label:"Odstawienie w przeszłości",type:"multi",options:["drgawki alkoholowe w przeszłości","delirium tremens w przeszłości","hospitalizacja z powodu odstawienia","bez powikłań odstawienia","nie dotyczy"]},
+    {id:"chronic",label:"Choroby",type:"multi",options:["padaczka","marskość wątroby","zapalenie trzustki","zapalenie żołądka","polineuropatia alkoholowa","cukrzyca","nadciśnienie","depresja","schizofrenia","neguje choroby przewlekłe","wywiad niedostępny"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"medications_text",label:"Leki",type:"text",placeholder:"np. disulfiram, karbamazepina, tiamina..."},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","nieznane","tak (wpisz poniżej)"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}},
+    {id:"other_subst",label:"Inne substancje",type:"multi",options:["benzodiazepiny","opioidy","dopalacze","leki (jakie — w uwagach)","pacjent neguje","brak możliwości ustalenia"]},
+    {id:"notes",label:"Uwagi",type:"text",placeholder:"np. znaleziono puste butelki, obok leki, pacjent po upadku ze schodów..."}
+  ]}
+],gen:function(d){
+  var p=[];if(h(d,'reason'))p.push('Wezwanie — '+d.reason);else p.push('Wezwanie do osoby w stanie upojenia alkoholowego');
+  if(h(d,'who_called'))p.push('Zgłoszenie od: '+d.who_called);
+  if(h(d,'where'))p.push('Miejsce: '+d.where);
+  if(h(d,'alcohol_type')&&d.alcohol_type!=='nieznany')p.push('Rodzaj alkoholu: '+d.alcohol_type);
+  if(h(d,'amount'))p.push('Ilość: '+d.amount.trim());
+  if(h(d,'last_drink'))p.push('Ostatnie spożycie: '+d.last_drink.trim());
+  if(h(d,'consciousness'))p.push('Świadomość: '+d.consciousness);
+  if(h(d,'airway'))p.push('Drogi oddechowe: '+d.airway);
+  if(h(d,'behavior')){var b=pos(d,'behavior');if(b.length)p.push('Zachowanie: '+b.join(', '));}
+  if(h(d,'symptoms')){var s=pos(d,'symptoms');if(s.length)p.push('Objawy: '+s.join(', '));}
+  if(h(d,'symptoms_other'))p.push(d.symptoms_other.trim());
+  if(h(d,'alcohol_hist')&&d.alcohol_hist!=='odmawia informacji')p.push('Wywiad alkoholowy: '+d.alcohol_hist);
+  else if(d.alcohol_hist==='odmawia informacji')p.push('Odmawia informacji o nawykach alkoholowych');
+  if(h(d,'withdrawal_hist')){var w=pos(d,'withdrawal_hist');if(w.length)p.push('Odstawienie w przeszłości: '+w.join(', '));}
+  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(isN(d,'chronic','wywiad niedostępny'))p.push('Wywiad niedostępny');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
+  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
+  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(isN(d,'allergies','nieznane'))p.push('Alergie nieznane');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
+  if(h(d,'other_subst')){var o=pos(d,'other_subst');if(isN(d,'other_subst','pacjent neguje'))p.push('Neguje spożycie innych substancji');else if(isN(d,'other_subst','brak możliwości'))p.push('Nie można ustalić spożycia innych substancji');else if(o.length)p.push('Inne substancje: '+o.join(', '));}
+  return J(p)+'.';
+},genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
+warn:function(d){var w=[];if(!h(d,'consciousness'))w.push('Brak oceny świadomości');if(!h(d,'airway'))w.push('Brak oceny dróg oddechowych');if(!h(d,'symptoms'))w.push('Brak objawów');if(!h(d,'alcohol_hist'))w.push('Brak wywiadu alkoholowego');
+  if(h(d,'reason')&&isN(d,'reason','metanol'))w.push('UWAGA: Podejrzenie metanolu/glikolu — pilna diagnostyka i leczenie');
+  if(h(d,'reason')&&isN(d,'reason','delirium'))w.push('UWAGA: Delirium tremens — stan zagrożenia życia');
+  if(h(d,'symptoms')&&isN(d,'symptoms','uraz głowy'))w.push('UWAGA: Uraz głowy — wykluczyć krwiak wewnątrzczaszkowy');
+  return w;}
+},
+
+psych:{steps:[
+  {id:"r",title:"Powód",fields:[
+    {id:"reason",label:"Główny problem",type:"single",options:["pobudzenie psychoruchowe","agresja","autoagresja","próba samobójcza","myśli samobójcze","atak paniki","lęk uogólniony","psychoza — omamy","psychoza — urojenia","mania","depresja ciężka","zatrucie substancjami","zespół abstynencyjny","delirium tremens","stupor / katatonia","odstawienie leków"]},
+    {id:"onset",label:"Początek",type:"single",options:["nagły (godziny)","narastający (dni)","przewlekły z zaostrzeniem","po substancji","po odstawieniu substancji / leku"]},
+    {id:"who",label:"Kto wezwał",type:"single",options:["pacjent","rodzina","policja","sąsiedzi","personel instytucji","świadek"]}
+  ]},
+  {id:"b",title:"Stan",fields:[
+    {id:"behavior",label:"Zachowanie",type:"multi",options:["spokojny, współpracujący","niespokojny kontaktowy","pobudzony","agresywny werbalnie","agresywny fizycznie — przedmioty","agresywny fizycznie — osoby","wycofany / mutystyczny","płaczliwy","euforyczny","zdezorientowany","omamy słuchowe","omamy wzrokowe","urojenia prześladowcze","urojenia wielkościowe","autoagresja aktywna","zagrożenie dla otoczenia"]},
+    {id:"behavior_other",label:"Inne zachowania (wpisz)",type:"text",placeholder:"np. rozbiera się, mówi do siebie, stereotypie ruchowe..."},
+    {id:"consciousness",label:"Świadomość",type:"single",options:["kontakt logiczny pełny","kontakt utrudniony","kontakt niemożliwy","senny / spowolniały","przymroczony / majaczący","stupor","nieprzytomny"]},
+    {id:"orientation",label:"Orientacja",type:"multi",options:["pełna","zaburzona co do czasu","zaburzona co do miejsca","zaburzona co do osoby","brak oceny"]},
+    {id:"speech",label:"Mowa",type:"single",options:["logiczna","gonitwa myśli","spowolniała","niespójna","bełkotliwa","sałatka słowna","mutyzm"]}
+  ]},
+  {id:"ri",title:"Ryzyko",fields:[
+    {id:"self_harm",label:"Autoagresja",type:"single",options:["brak","świeże samookaleczenia","stare ślady","próba samobójcza zrealizowana","próba przerwana","myśli z planem","myśli bez planu","zaprzecza","odmawia odpowiedzi"]},
+    {id:"harm_oth",label:"Heteroagresja",type:"single",options:["brak zagrożenia","groźby werbalne","agresja bez narzędzi","użycie narzędzia","asysta policji","zabezpieczony"]},
+    {id:"subst",label:"Substancje",type:"multi",options:["alkohol — upojenie","alkohol — odstawienie","amfetamina","kokaina","dopalacze","opioidy","benzodiazepiny","kannabinoidy","halucynogeny","pacjent neguje","brak ustalenia"]}
+  ]},
+  {id:"h",title:"Wywiad",fields:[
+    {id:"psych_hx",label:"Psychiatria",type:"multi",options:["depresja","ch. afektywna dwubiegunowa","schizofrenia","zaburzenia lękowe","osobowość borderline","PTSD","uzależnienie od alkoholu","uzależnienie od substancji","próby samobójcze w przeszłości","hospitalizacje psychiatryczne","bez wywiadu psychiatrycznego","odmawia informacji"]},
+    {id:"psych_hx_other",label:"Inne rozpoznania (wpisz)",type:"text",placeholder:"np. zaburzenia obsesyjno-kompulsyjne, anoreksja..."},
+    {id:"psych_meds",label:"Leki psychiatryczne",type:"text",placeholder:"np. olanzapina, sertralina..."},
+    {id:"compliance",label:"Compliance",type:"single",options:["przyjmuje regularnie","odstawił","nieregularnie","nigdy nie leczony","odmawia informacji"]},
+    {id:"chronic",label:"Inne choroby",type:"multi",options:["padaczka","cukrzyca","nadciśnienie","choroby tarczycy","neguje inne choroby"]},
+    {id:"chronic_other",label:"Inne choroby (wpisz)",type:"text",placeholder:""},
+    {id:"allergies",label:"Alergie",type:"single",options:["neguje","tak (wpisz poniżej)"]},
+    {id:"allergies_text",label:"Jakie?",type:"text",placeholder:"",condition:{field:"allergies",value:"tak (wpisz poniżej)"}}
+  ]},
+  {id:"e",title:"Dodatkowe",fields:[
+    {id:"police",label:"Policja",type:"single",options:["na miejscu — asysta","wezwana","doprowadzony przez policję","nie wzywano"]},
+    {id:"legal",label:"Status prawny",type:"single",options:["wyraża zgodę na transport","odmawia transportu","transport bez zgody — art. 21","zatrzymany przez policję","nie dotyczy"]},
+    {id:"notes",label:"Uwagi",type:"text",placeholder:"np. list pożegnalny, puste opakowania leków..."}
+  ]}
+],gen:function(d){
+  var p=[];if(h(d,'reason'))p.push('Wezwanie: '+d.reason);else p.push('Interwencja psychiatryczna');
+  if(h(d,'who'))p.push('Zgłoszenie: '+d.who);if(h(d,'onset'))p.push('Początek: '+d.onset);
+  if(h(d,'consciousness'))p.push('Świadomość: '+d.consciousness);
+  if(h(d,'behavior')){var b=pos(d,'behavior');if(b.length)p.push('Zachowanie: '+b.join(', '));}
+  if(h(d,'behavior_other'))p.push(d.behavior_other.trim());
+  if(h(d,'orientation')){if(isN(d,'orientation','pełna'))p.push('Orientacja pełna');else if(isN(d,'orientation','brak oceny'))p.push('Ocena orientacji niemożliwa');else{var o=pos(d,'orientation');if(o.length)p.push('Orientacja: '+o.join(', '));}}
+  if(h(d,'speech'))p.push('Mowa: '+d.speech);
+  if(h(d,'self_harm')){var sh=d.self_harm;if(sh==='brak'){}else if(sh==='zaprzecza')p.push('Zaprzecza myślom samobójczym');else if(sh==='odmawia odpowiedzi')p.push('Odmawia odpowiedzi o myśli samobójcze');else p.push(cap(sh));}
+  if(h(d,'harm_oth')&&!isN(d,'harm_oth','brak zagrożenia'))p.push('Heteroagresja: '+d.harm_oth);
+  if(h(d,'subst')){var s=pos(d,'subst');if(isN(d,'subst','pacjent neguje'))p.push('Neguje substancje psychoaktywne');else if(isN(d,'subst','brak ustalenia'))p.push('Substancje nie do ustalenia');else if(s.length)p.push('Substancje: '+s.join(', '));}
+  if(h(d,'psych_hx')){var hx=pos(d,'psych_hx');if(isN(d,'psych_hx','bez wywiadu'))p.push('Bez obciążeń psychiatrycznych');else if(isN(d,'psych_hx','odmawia'))p.push('Odmawia podania wywiadu');else if(hx.length){var hxt=hx.join(', ');if(h(d,'psych_hx_other'))hxt+=', '+d.psych_hx_other.trim();p.push('Psychiatria: '+hxt);}}
+  else if(h(d,'psych_hx_other'))p.push('Psychiatria: '+d.psych_hx_other.trim());
+  if(h(d,'psych_meds'))p.push('Leki: '+d.psych_meds.trim());
+  if(h(d,'compliance')){var c=d.compliance;if(c==='przyjmuje regularnie')p.push('Leki przyjmuje regularnie');else if(c==='odstawił')p.push('Odstawił leki samowolnie');else if(c==='nieregularnie')p.push('Nieregularne przyjmowanie');else if(c==='nigdy nie leczony'){}else if(c==='odmawia informacji')p.push('Odmawia informacji o leczeniu');}
+  if(h(d,'chronic')){var ch=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Inne choroby neguje');else if(ch.length){var ct=ch.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('Ponadto: '+ct);}}
+  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
+  return J(p)+'.';
+},genO:function(d){
+  var p=[];if(h(d,'police')&&!isN(d,'police','nie wzywano'))p.push('Policja: '+d.police);
+  if(h(d,'legal')&&d.legal!=='nie dotyczy')p.push(cap(d.legal));
+  if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';
+},warn:function(d){var w=[];if(!h(d,'reason'))w.push('Brak powodu');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'behavior'))w.push('Brak zachowania');if(!h(d,'self_harm'))w.push('Brak oceny autoagresji');if(!h(d,'harm_oth'))w.push('Brak oceny heteroagresji');if(!h(d,'psych_hx'))w.push('Brak wywiadu');if(!h(d,'subst'))w.push('Brak substancji');if(!h(d,'legal'))w.push('Brak statusu prawnego');return w;}
+}
+
+};
+
+// APP
+var cur=null,step=0,D={};
+function show(id){document.querySelectorAll('.S').forEach(function(s){s.classList.remove('a')});document.getElementById(id).classList.add('a');document.getElementById('nf').style.display=id==='s1'?'flex':'none';window.scrollTo(0,0)}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('v');setTimeout(function(){t.classList.remove('v')},2000)}
+function start(k){cur=SC[k];step=0;D={};show('s1');render()}
+function R(){cur=null;step=0;D={};show('s0')}
+function gB(){show('s1');render()}
+function nS(){sv();if(step<cur.steps.length-1){step++;render();window.scrollTo(0,0)}else genOut()}
+function pS(){sv();if(step>0){step--;render();window.scrollTo(0,0)}}
+function sv(){document.querySelectorAll('[data-f]').forEach(function(el){D[el.dataset.f]=el.value})}
+
+function render(){
+  var s=cur.steps[step];
+  document.getElementById('si').innerHTML=cur.steps.map(function(x,i){return'<div class="sd'+(i<step?' d':i===step?' cur':'')+'"></div>'}).join('');
+  var htm='<div class="st">'+s.title+'</div>';
+  s.fields.forEach(function(f){
+    if(f.condition&&D[f.condition.field]!==f.condition.value)return;
+    htm+='<div class="fl">'+f.label+'</div>';
+    if(f.type==='single'){htm+='<div class="fg">';f.options.forEach(function(o){htm+='<div class="c'+(D[f.id]===o?' s':'')+'" onclick="s1(\''+e(f.id)+'\',\''+e(o)+'\')">'+o+'</div>'});htm+='</div>';}
+    else if(f.type==='multi'){htm+='<div class="fg">';f.options.forEach(function(o){htm+='<div class="c m'+((D[f.id]||[]).indexOf(o)>=0?' s':'')+'" onclick="sM(\''+e(f.id)+'\',\''+e(o)+'\')">'+o+'</div>'});htm+='</div>';}
+    else if(f.type==='text'){htm+='<input class="ti" type="text" data-f="'+f.id+'" placeholder="'+e(f.placeholder||'')+'" value="'+e(D[f.id]||'')+'">';}
+  });
+  document.getElementById('fc').innerHTML=htm;
+  document.getElementById('bP').style.display=step===0?'none':'';
+  document.getElementById('bN').textContent=step===cur.steps.length-1?'Generuj tekst':'Dalej';
+}
+function e(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;')}
+function s1(f,v){sv();D[f]=D[f]===v?null:v;render()}
+function sM(f,v){sv();if(!D[f])D[f]=[];var i=D[f].indexOf(v);if(i>=0)D[f].splice(i,1);else D[f].push(v);render()}
+
+function genOut(){
+  sv();var w=cur.gen(D),o=cur.genO(D),warn=cur.warn(D);
+  document.getElementById('ow').textContent=w;
+  document.getElementById('oo').textContent=o||'(uzupełnij pole uwag jeśli potrzeba)';
+  var total=cur.steps.reduce(function(s,st){return s+st.fields.filter(function(f){return!f.condition}).length},0);
+  var filled=Object.keys(D).filter(function(k){var v=D[k];if(Array.isArray(v))return v.length>0;if(typeof v==='string')return v.trim().length>0;return v!=null}).length;
+  var pct=Math.min(100,Math.round(filled/total*100));
+  var fl=document.getElementById('cpf');fl.style.width=pct+'%';fl.style.background=pct>=80?'var(--gn)':pct>=50?'var(--yl)':'var(--rd)';
+  document.getElementById('cpl').textContent=pct+'%';document.getElementById('cpl').style.color=fl.style.background;
+  var wC=document.getElementById('wc');
+  if(warn.length)wC.innerHTML='<div class="wb"><div class="wt">Rozważ uzupełnienie</div>'+warn.map(function(x){return'<div class="wi">'+x+'</div>'}).join('')+'</div>';
+  else wC.innerHTML='<div class="ok">Dokumentacja kompletna</div>';
+  show('s2');
+}
+
+function cT(t){dc(document.getElementById('o'+t).textContent,t==='w'?'Skopiowano wywiad':'Skopiowano opis')}
+function cB(){var w=document.getElementById('ow').textContent,o=document.getElementById('oo').textContent;var c='WYWIAD:\n'+w;if(o&&o.indexOf('(uzupełnij')<0)c+='\n\nOPIS:\n'+o;dc(c,'Skopiowano wywiad + opis')}
+function dc(t,m){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast(m)}).catch(function(){fb(t,m)});else fb(t,m)}
+function fb(t,m){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;left:-9999px';document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(m)}catch(x){toast('Zaznacz tekst ręcznie')}document.body.removeChild(a)}
+
+document.getElementById('close-modal').addEventListener('click', function() {
+  document.getElementById('welcome-modal').style.display = 'none';
+});
+(function(){var g=document.getElementById('gr');CATS.forEach(function(c){var d=document.createElement('div');d.className='gc';if(c.mobileOnly){d.classList.add('mobile-only')}if(c.k==='coffee'){d.onclick=function(){window.open('https://buymeacoffee.com/jaqbek','_blank')}}else if(c.k==='email'){d.onclick=function(){window.location.href='mailto:jaqbek.eth@gmail.com?subject=KMCR%20Asystent%20-%20Sugestia'}}else{d.onclick=function(){start(c.k)}};d.innerHTML='<div class="gi">'+c.i+'</div><div class="gl">'+c.l+'</div><div class="gs">'+c.s+'</div>';g.appendChild(d)})})();
+</script>
+</body>
+</html>
