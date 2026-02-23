@@ -237,13 +237,13 @@ chest_pain:{steps:[
   if(h(d,'relieving')){var r2=pos(d,'relieving');if(r2.length)p.push('Łagodzi: '+r2.join(', '));}
   var sy=symp(d,'symptoms');if(sy)p.push(sy);
   if(h(d,'symptoms_other'))p.push(d.symptoms_other.trim());
-  p=p.concat(hB(d));return J(p)+'.';
+  return J(p)+'.';
 },genO:function(d){
   var p=[];
   if(h(d,'prior_tx')){var t=pos(d,'prior_tx');if(t.length)p.push('Przed ZRM przyjął: '+t.join(', '));else if(isN(d,'prior_tx','nic nie'))p.push('Przed ZRM nie przyjmował leków');}
   if(h(d,'nitro_resp')&&d.nitro_resp!=='nie dotyczy')p.push('Reakcja na NTG: '+d.nitro_resp);
   if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';
-},warn:function(d){var w=[];if(!h(d,'pain_nrs'))w.push('Brak NRS');if(!h(d,'radiation'))w.push('Brak promieniowania');if(!h(d,'symptoms'))w.push('Brak objawów towarzyszących');if(!h(d,'chronic'))w.push('Brak wywiadu');if(!h(d,'medications_text'))w.push('Brak leków');if(!h(d,'allergies'))w.push('Brak alergii');return w;}
+},warn:function(d){var w=[];if(!h(d,'pain_nrs'))w.push('Brak NRS');if(!h(d,'radiation'))w.push('Brak promieniowania');if(!h(d,'symptoms'))w.push('Brak objawów towarzyszących');return w;}
 },
 
 dyspnea:{steps:[
@@ -290,14 +290,13 @@ dyspnea:{steps:[
   if(h(d,'cough')&&d.cough!=='bez kaszlu'){var c='Kaszel '+d.cough;if(h(d,'sputum'))c+=', plwocina '+d.sputum;p.push(c);}
   var sy=symp(d,'symptoms');if(sy)p.push(sy);
   if(h(d,'symptoms_other'))p.push(d.symptoms_other.trim());
-  p=p.concat(hB(d));
   if(h(d,'home_o2')&&d.home_o2!=='nie stosuje')p.push('Tlenoterapia domowa: '+d.home_o2);
   return J(p)+'.';
 },genO:function(d){
   var p=[];if(h(d,'prior_tx')){var t=pos(d,'prior_tx');if(t.length)p.push('Przed ZRM stosował: '+t.join(', '));else if(isN(d,'prior_tx','nic nie'))p.push('Przed ZRM nie stosował leków');}
   if(h(d,'prior_eff')&&d.prior_eff!=='nie dotyczy')p.push('Efekt: '+d.prior_eff);
   if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';
-},warn:function(d){var w=[];if(!h(d,'onset_speed'))w.push('Brak początku');if(!h(d,'dys_type'))w.push('Brak typu');if(!h(d,'speech'))w.push('Brak oceny mówienia');if(!h(d,'sounds'))w.push('Brak osłuchiwania');if(!h(d,'chronic'))w.push('Brak wywiadu');return w;}
+},warn:function(d){var w=[];if(!h(d,'onset_speed'))w.push('Brak początku');if(!h(d,'dys_type'))w.push('Brak typu');if(!h(d,'speech'))w.push('Brak oceny mówienia');if(!h(d,'sounds'))w.push('Brak osłuchiwania');return w;}
 },
 
 stroke:{steps:[
@@ -326,21 +325,15 @@ stroke:{steps:[
   var p=['Wezwanie z powodu nagłych objawów neurologicznych'];
   if(h(d,'onset_time'))p.push('Czas wystąpienia: '+d.onset_time.trim());
   if(h(d,'last_healthy'))p.push('Ostatnio widziany zdrowym: '+d.last_healthy.trim());
-  if(h(d,'witness'))p.push(cap(d.witness));
+  if(h(d,'witness')){var wi=d.witness;if(wi==='świadek zdarzenia')p.push('Zdarzenie w obecności świadka');else if(wi==='pacjent sam')p.push('Informacje od pacjenta');else if(wi==='znaleziony z objawami')p.push('Pacjent znaleziony z objawami');else if(wi==='objawy po przebudzeniu')p.push('Objawy stwierdzone po przebudzeniu');else p.push(cap(wi));}
   if(h(d,'onset_ctx'))p.push('Okoliczności: '+d.onset_ctx);
   if(h(d,'deficits'))p.push('Stwierdzono: '+d.deficits.join(', '));
   if(h(d,'consciousness'))p.push('Świadomość: '+d.consciousness);
   if(h(d,'dynamics'))p.push('Dynamika: '+d.dynamics);
   if(h(d,'deficits_other'))p.push(d.deficits_other.trim());
-  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
-  else if(h(d,'chronic_other'))p.push('W wywiadzie: '+d.chronic_other.trim());
-  if(h(d,'anticoag')){var a=pos(d,'anticoag');if(a.length)p.push('Antykoagulacja: '+a.join(', '));else if(isN(d,'anticoag','nie przyjmuje'))p.push('Nie przyjmuje leków przeciwkrzepliwych');}
-  if(h(d,'medications_text'))p.push('Inne leki: '+d.medications_text.trim());
-  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
-  if(h(d,'last_meal'))p.push('Ostatni posiłek: '+d.last_meal.trim());
   return J(p)+'.';
 },genO:function(d){return'';},
-warn:function(d){var w=[];if(!h(d,'onset_time')&&!h(d,'last_healthy'))w.push('KRYTYCZNE: Brak czasu wystąpienia / ostatniego widzenia zdrowym');if(!h(d,'deficits'))w.push('Brak deficytów');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'dynamics'))w.push('Brak dynamiki objawów');if(!h(d,'anticoag'))w.push('Brak antykoagulacji');return w;}
+warn:function(d){var w=[];if(!h(d,'onset_time')&&!h(d,'last_healthy'))w.push('KRYTYCZNE: Brak czasu wystąpienia / ostatniego widzenia zdrowym');if(!h(d,'deficits'))w.push('Brak deficytów');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'dynamics'))w.push('Brak dynamiki objawów');return w;}
 },
 
 // ZATRZYMANIE KRĄŻENIA
@@ -367,7 +360,7 @@ cardiac_arrest:{steps:[
   ]}
 ],gen:function(d){
   var p=['Wezwanie do osoby z nagłym zatrzymaniem krążenia'];
-  if(h(d,'witnessed'))p.push(cap(d.witnessed));
+  if(h(d,'witnessed'))p.push('NZK '+d.witnessed);
   if(h(d,'location'))p.push('Miejsce: '+d.location);
   if(h(d,'est_time_arrest'))p.push('Szacowany czas NZK przed ZRM: '+d.est_time_arrest);
   if(h(d,'bystander_cpr')){var v=d.bystander_cpr;if(v.indexOf('nie dotyczy')<0)p.push(cap(v));}
@@ -375,13 +368,10 @@ cardiac_arrest:{steps:[
   if(h(d,'probable_cause'))p.push('Podejrzewana przyczyna: '+d.probable_cause);
   if(h(d,'preceding')){var s=pos(d,'preceding');if(s.length)p.push('Objawy poprzedzające: '+s.join(', '));}
   if(h(d,'preceding_other'))p.push(d.preceding_other.trim());
-  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent negował choroby przewlekłe');else if(isN(d,'chronic','wywiad niedostępny'))p.push('Wywiad chorobowy niedostępny');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
-  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
-  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(isN(d,'allergies','nieznane'))p.push('Alergie nieznane');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
   if(h(d,'dnr')&&d.dnr!=='brak informacji o DNR'&&d.dnr!=='nie dotyczy')p.push(cap(d.dnr));
   return J(p)+'.';
 },genO:function(d){return'';},
-warn:function(d){var w=[];if(!h(d,'witnessed'))w.push('Brak info czy NZK obserwowane');if(!h(d,'bystander_cpr'))w.push('Brak info o RKO świadków');if(!h(d,'probable_cause'))w.push('Brak podejrzewanej przyczyny');if(!h(d,'est_time_arrest'))w.push('Brak szacowanego czasu NZK');if(!h(d,'chronic'))w.push('Brak wywiadu');return w;}
+warn:function(d){var w=[];if(!h(d,'witnessed'))w.push('Brak info czy NZK obserwowane');if(!h(d,'bystander_cpr'))w.push('Brak info o RKO świadków');if(!h(d,'probable_cause'))w.push('Brak podejrzewanej przyczyny');if(!h(d,'est_time_arrest'))w.push('Brak szacowanego czasu NZK');return w;}
 },
 
 // NADCIŚNIENIE
@@ -413,14 +403,9 @@ hypertension:{steps:[
   if(h(d,'symptoms')){var s=pos(d,'symptoms');if(s.length)p.push('Objawy: '+s.join(', '));else if(isN(d,'symptoms','bez objawów'))p.push('Pacjent bez objawów podmiotowych — wysokie wartości RR przy rutynowym pomiarze');}
   if(h(d,'symptoms_other'))p.push(d.symptoms_other.trim());
   if(h(d,'ht_known')){var v=d.ht_known;if(v==='nowo rozpoznane / pierwszy epizod')p.push('Pierwszy epizod wysokich wartości RR w życiu');else p.push('Nadciśnienie: '+v);}
-  if(h(d,'compliance')){var c=d.compliance;if(c==='przyjmuje regularnie')p.push('Leki przyjmuje regularnie');else if(c==='odstawił samowolnie')p.push('Pacjent odstawił leki hipotensyjne samowolnie');else if(c==='nieregularnie')p.push('Nieregularne przyjmowanie leków');else if(c==='brak leków'){}}
-  if(h(d,'chronic')){var ch=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Inne choroby neguje');else if(ch.length){var ct=ch.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('Ponadto: '+ct);}}
-  else if(h(d,'chronic_other'))p.push('Ponadto: '+d.chronic_other.trim());
-  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
-  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
   return J(p)+'.';
 },genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
-warn:function(d){var w=[];if(!h(d,'symptoms'))w.push('Brak objawów');if(!h(d,'ht_known'))w.push('Brak info czy NT rozpoznane');if(!h(d,'chronic'))w.push('Brak wywiadu');if(!h(d,'compliance'))w.push('Brak compliance');if(!h(d,'medications_text'))w.push('Brak leków');return w;}
+warn:function(d){var w=[];if(!h(d,'symptoms'))w.push('Brak objawów');if(!h(d,'ht_known'))w.push('Brak info czy NT rozpoznane');return w;}
 },
 
 trauma:{steps:[
@@ -462,18 +447,12 @@ trauma:{steps:[
   if(h(d,'inj_desc'))p.push(d.inj_desc.trim());
   if(h(d,'bleeding')&&!isN(d,'bleeding','bez '))p.push('Krwawienie: '+d.bleeding);
   if(h(d,'shock_signs')){var sh=pos(d,'shock_signs');if(sh.length)p.push('Cechy wstrząsu: '+sh.join(', '));else if(isN(d,'shock_signs','bez cech'))p.push('Bez cech wstrząsu');}
-  if(h(d,'motor')&&d.motor!=='zachowane'&&d.motor!=='nie do oceny')p.push(cap(d.motor));
+  if(h(d,'motor')&&d.motor!=='zachowane'&&d.motor!=='nie do oceny')p.push('Neurologicznie: '+d.motor);
   var n=nrs(d,'pain_nrs');if(n)p.push(n);
   if(h(d,'spine')&&!isN(d,'spine','nie wskazana'))p.push('Immobilizacja: '+d.spine);
-  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
-  if(h(d,'anticoag'))p.push('Antykoagulacja: '+d.anticoag.trim());
-  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
-  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
-  if(h(d,'etoh')){var v=d.etoh;if(v==='trzeźwy wg deklaracji')p.push('Trzeźwy wg deklaracji');else if(v==='brak oceny')p.push('Ocena trzeźwości niemożliwa');else p.push(cap(v));}
-  if(h(d,'tetanus')&&d.tetanus!=='nie pamięta')p.push('Tężec: '+d.tetanus);
   return J(p)+'.';
 },genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
-warn:function(d){var w=[];if(!h(d,'mechanism'))w.push('Brak mechanizmu');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'inj_loc'))w.push('Brak lokalizacji');if(!h(d,'bleeding'))w.push('Brak krwawienia');if(!h(d,'spine'))w.push('Brak immobilizacji');if(!h(d,'chronic'))w.push('Brak wywiadu');return w;}
+warn:function(d){var w=[];if(!h(d,'mechanism'))w.push('Brak mechanizmu');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'inj_loc'))w.push('Brak lokalizacji');if(!h(d,'bleeding'))w.push('Brak krwawienia');if(!h(d,'spine'))w.push('Brak immobilizacji');return w;}
 },
 
 // WYPADEK KOMUNIKACYJNY
@@ -517,27 +496,22 @@ traffic:{steps:[
   if(h(d,'collision'))p.push('Typ zderzenia: '+d.collision);
   if(h(d,'speed'))p.push('Szacowana prędkość: '+d.speed);
   if(h(d,'safety')){var s=pos(d,'safety');if(s.length)p.push('Zabezpieczenia: '+s.join(', '));}
-  if(h(d,'extrication')&&d.extrication!=='nie dotyczy')p.push(cap(d.extrication));
+  if(h(d,'extrication')&&d.extrication!=='nie dotyczy')p.push('Wydobycie: '+d.extrication);
   if(h(d,'mech_det'))p.push(d.mech_det.trim());
-  if(h(d,'other_victims')&&d.other_victims!=='nieznane')p.push(cap(d.other_victims));
+  if(h(d,'other_victims')&&d.other_victims!=='nieznane')p.push('Inne ofiary: '+d.other_victims);
   if(h(d,'consciousness'))p.push('Świadomość: '+d.consciousness);
-  if(h(d,'amnesia')&&d.amnesia!=='nie do oceny'){if(d.amnesia.indexOf('nie —')>=0)p.push('Pamięta przebieg zdarzenia');else p.push(cap(d.amnesia));}
+  if(h(d,'amnesia')&&d.amnesia!=='nie do oceny'){if(d.amnesia.indexOf('nie —')>=0)p.push('Pamięta przebieg zdarzenia');else p.push('Stwierdzona '+d.amnesia);}
   if(h(d,'inj_loc'))p.push('Obrażenia: '+d.inj_loc.join(', '));
   if(h(d,'inj_type'))p.push('Stwierdzone: '+d.inj_type.join(', '));
   if(h(d,'inj_desc'))p.push(d.inj_desc.trim());
   if(h(d,'bleeding')&&!isN(d,'bleeding','bez '))p.push('Krwawienie: '+d.bleeding);
   if(h(d,'shock_signs')){var sh=pos(d,'shock_signs');if(sh.length)p.push('Cechy wstrząsu: '+sh.join(', '));else if(isN(d,'shock_signs','bez cech'))p.push('Bez cech wstrząsu');}
-  if(h(d,'motor')&&d.motor!=='zachowane'&&d.motor!=='nie do oceny')p.push(cap(d.motor));
+  if(h(d,'motor')&&d.motor!=='zachowane'&&d.motor!=='nie do oceny')p.push('Neurologicznie: '+d.motor);
   var n=nrs(d,'pain_nrs');if(n)p.push(n);
   if(h(d,'spine')&&!isN(d,'spine','nie wskazana'))p.push('Immobilizacja: '+d.spine);
-  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(isN(d,'chronic','wywiad niedostępny'))p.push('Wywiad chorobowy niedostępny');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
-  if(h(d,'anticoag'))p.push('Antykoagulacja: '+d.anticoag.trim());
-  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
-  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(isN(d,'allergies','nieznane'))p.push('Alergie nieznane');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
-  if(h(d,'etoh')){var v=d.etoh;if(v==='trzeźwy wg deklaracji')p.push('Trzeźwy wg deklaracji');else if(v==='brak oceny')p.push('Ocena trzeźwości niemożliwa');else p.push(cap(v));}
   return J(p)+'.';
 },genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
-warn:function(d){var w=[];if(!h(d,'role'))w.push('Brak roli poszkodowanego');if(!h(d,'collision'))w.push('Brak typu zderzenia');if(!h(d,'safety'))w.push('Brak zabezpieczeń');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'inj_loc'))w.push('Brak obrażeń');if(!h(d,'spine'))w.push('Brak immobilizacji');if(!h(d,'chronic'))w.push('Brak wywiadu');return w;}
+warn:function(d){var w=[];if(!h(d,'role'))w.push('Brak roli poszkodowanego');if(!h(d,'collision'))w.push('Brak typu zderzenia');if(!h(d,'safety'))w.push('Brak zabezpieczeń');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'inj_loc'))w.push('Brak obrażeń');if(!h(d,'spine'))w.push('Brak immobilizacji');return w;}
 },
 
 abdominal:{steps:[
@@ -583,13 +557,11 @@ abdominal:{steps:[
   if(h(d,'gi_other'))p.push(d.gi_other.trim());
   if(h(d,'perit'))p.push('Badanie brzucha: '+d.perit.join(', '));
   if(h(d,'perit_other'))p.push(d.perit_other.trim());
-  if(h(d,'fever')&&d.fever!=='nie')p.push(cap(d.fever));
+  if(h(d,'fever')&&d.fever!=='nie'){var fv=d.fever;p.push(fv.indexOf('gorączka')>=0||fv.indexOf('°C septyczna')>=0?cap(fv):'Gorączka '+fv);}
   if(h(d,'urinary')){var u=pos(d,'urinary');if(u.length)p.push('Objawy moczowe: '+u.join(', '));}
-  p=p.concat(hB(d));
-  if(h(d,'last_meal'))p.push('Ostatni posiłek: '+d.last_meal.trim());if(h(d,'last_stool'))p.push('Stolec: '+d.last_stool.trim());
   if(h(d,'gyn'))p.push('Ginekologicznie: '+d.gyn.trim());return J(p)+'.';
 },genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
-warn:function(d){var w=[];if(!h(d,'onset'))w.push('Brak początku');if(!h(d,'pain_type'))w.push('Brak charakteru');if(!h(d,'location'))w.push('Brak lokalizacji');if(!h(d,'perit'))w.push('Brak badania brzucha');if(!h(d,'chronic'))w.push('Brak wywiadu');return w;}
+warn:function(d){var w=[];if(!h(d,'onset'))w.push('Brak początku');if(!h(d,'pain_type'))w.push('Brak charakteru');if(!h(d,'location'))w.push('Brak lokalizacji');if(!h(d,'perit'))w.push('Brak badania brzucha');return w;}
 },
 
 hypoglycemia:{steps:[
@@ -630,11 +602,9 @@ hypoglycemia:{steps:[
   if(h(d,'dm_tx')){var t=pos(d,'dm_tx');if(t.length)p.push('Leczenie: '+t.join(', '));else if(isN(d,'dm_tx','brak '))p.push('Bez farmakoterapii hipoglikemizującej');}
   if(h(d,'ins_text'))p.push('Schemat: '+d.ins_text.trim());if(h(d,'last_ins'))p.push('Ostatnie podanie: '+d.last_ins.trim());
   if(h(d,'hypos')&&!isN(d,'hypos','bez hipoglikemii'))p.push('Hipoglikemie: '+d.hypos);
-  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Inne choroby neguje');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('Ponadto: '+ct);}}
-  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
-  if(h(d,'last_meal'))p.push('Ostatni posiłek: '+d.last_meal.trim());return J(p)+'.';
+  return J(p)+'.';
 },genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
-warn:function(d){var w=[];if(!h(d,'gluc'))w.push('KRYTYCZNE: Brak glikemii');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'dm_type'))w.push('Brak typu cukrzycy');if(!h(d,'dm_tx'))w.push('Brak leczenia');if(!h(d,'last_ins'))w.push('Brak ostatniego podania');if(!h(d,'last_meal'))w.push('Brak posiłku');return w;}
+warn:function(d){var w=[];if(!h(d,'gluc'))w.push('KRYTYCZNE: Brak glikemii');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'dm_type'))w.push('Brak typu cukrzycy');if(!h(d,'dm_tx'))w.push('Brak leczenia');if(!h(d,'last_ins'))w.push('Brak ostatniego podania');return w;}
 },
 
 allergy:{steps:[
@@ -674,8 +644,7 @@ allergy:{steps:[
   if(h(d,'prev_react'))p.push('Wcześniejsze reakcje: '+d.prev_react);
   if(h(d,'known_all'))p.push('Znane alergie: '+d.known_all.trim());
   if(h(d,'epipen')){if(d.epipen==='użył przed ZRM')p.push('Użył autoinjektora adrenaliny przed ZRM');else if(d.epipen==='posiada — nie użył')p.push('Posiada autoinjektor — nie użył');else p.push('Nie posiada autoinjektora');}
-  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
-  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());return J(p)+'.';
+  return J(p)+'.';
 },genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
 warn:function(d){var w=[];if(!h(d,'trigger'))w.push('Brak alergenu');if(!h(d,'severity'))w.push('Brak ciężkości');if(!h(d,'skin')&&!h(d,'resp')&&!h(d,'cardio'))w.push('Brak objawów');if(!h(d,'epipen'))w.push('Brak info o autoinjektorze');if(h(d,'chronic')&&isN(d,'chronic','astma'))w.push('UWAGA: Astma — ryzyko ciężkiej anafilaksji');if(h(d,'chronic')&&isN(d,'chronic','beta-bloker'))w.push('UWAGA: Beta-bloker — osłabiona odpowiedź na adrenalinę');return w;}
 },
@@ -724,13 +693,10 @@ pregnancy:{steps:[
   if(h(d,'complications')){var c=pos(d,'complications');if(c.length){var ct=c.join(', ');if(h(d,'complications_other'))ct+=', '+d.complications_other.trim();p.push('Powikłania ciąży: '+ct);}else if(isN(d,'complications','bez powikłań'))p.push('Ciąża dotychczas niepowikłana');}
   else if(h(d,'complications_other'))p.push('Powikłania ciąży: '+d.complications_other.trim());
   if(h(d,'prev_births')){var b=pos(d,'prev_births');if(b.length)p.push('Poprzednie porody: '+b.join(', '));}
-  if(h(d,'chronic')){var ch=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Matka neguje choroby przewlekłe');else if(ch.length){var ct2=ch.join(', ');if(h(d,'chronic_other'))ct2+=', '+d.chronic_other.trim();p.push('Choroby matki: '+ct2);}}
-  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
-  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
   if(h(d,'blood_type')&&d.blood_type!=='nie zna')p.push('Grupa krwi: '+d.blood_type);
   return J(p)+'.';
 },genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
-warn:function(d){var w=[];if(!h(d,'gest_age'))w.push('KRYTYCZNE: Brak tygodnia ciąży');if(!h(d,'reason'))w.push('Brak powodu wezwania');if(!h(d,'bleeding'))w.push('Brak oceny krwawienia');if(!h(d,'contractions'))w.push('Brak oceny skurczów');if(!h(d,'fetal_mvmt'))w.push('Brak oceny ruchów płodu');if(!h(d,'complications'))w.push('Brak powikłań ciąży');if(!h(d,'chronic'))w.push('Brak chorób matki');if(!h(d,'blood_type'))w.push('Brak grupy krwi');return w;}
+warn:function(d){var w=[];if(!h(d,'gest_age'))w.push('KRYTYCZNE: Brak tygodnia ciąży');if(!h(d,'reason'))w.push('Brak powodu wezwania');if(!h(d,'bleeding'))w.push('Brak oceny krwawienia');if(!h(d,'contractions'))w.push('Brak oceny skurczów');if(!h(d,'fetal_mvmt'))w.push('Brak oceny ruchów płodu');if(!h(d,'complications'))w.push('Brak powikłań ciąży');if(!h(d,'blood_type'))w.push('Brak grupy krwi');return w;}
 },
 
 // GORĄCZKA
@@ -761,19 +727,14 @@ fever:{steps:[
   var p=[];if(h(d,'age_group'))p.push('Wezwanie do gorączkującego pacjenta — '+d.age_group);else p.push('Wezwanie z powodu gorączki');
   if(h(d,'temp_value'))p.push('Temperatura: '+d.temp_value.trim());
   if(h(d,'fever_duration'))p.push('Gorączka trwa: '+d.fever_duration);
-  if(h(d,'antipyretics')&&!isN(d,'antipyretics','nie dotyczy')){if(isN(d,'antipyretics','nie podawano'))p.push('Leków przeciwgorączkowych nie podawano');else p.push(cap(d.antipyretics));}
+  if(h(d,'antipyretics')&&!isN(d,'antipyretics','nie dotyczy')){if(isN(d,'antipyretics','nie podawano'))p.push('Leków przeciwgorączkowych nie podawano');else p.push('Podano: '+d.antipyretics);}
   if(h(d,'consciousness'))p.push('Świadomość: '+d.consciousness);
   if(h(d,'hydration')&&d.hydration!=='nie do oceny')p.push('Nawodnienie: '+d.hydration);
   if(h(d,'symptoms')){var s=pos(d,'symptoms');if(s.length)p.push('Objawy: '+s.join(', '));}
   if(h(d,'symptoms_other'))p.push(d.symptoms_other.trim());
-  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(c.length){var ct2=c.join(', ');if(h(d,'chronic_other'))ct2+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct2);}}
-  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
-  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
-  if(h(d,'vaccinations')&&!isN(d,'vaccinations','nie dotyczy')){if(d.vaccinations==='szczepione wg kalendarza')p.push('Dziecko szczepione wg kalendarza');else p.push('Szczepienia: '+d.vaccinations);}
-  if(h(d,'contacts')){var ct=pos(d,'contacts');if(ct.length)p.push('Ekspozycje: '+ct.join(', '));}
   return J(p)+'.';
 },genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
-warn:function(d){var w=[];if(!h(d,'age_group'))w.push('Brak grupy wiekowej');if(!h(d,'temp_value'))w.push('Brak temperatury');if(!h(d,'symptoms'))w.push('Brak objawów');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'hydration'))w.push('Brak oceny nawodnienia');if(!h(d,'chronic'))w.push('Brak wywiadu');
+warn:function(d){var w=[];if(!h(d,'age_group'))w.push('Brak grupy wiekowej');if(!h(d,'temp_value'))w.push('Brak temperatury');if(!h(d,'symptoms'))w.push('Brak objawów');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'hydration'))w.push('Brak oceny nawodnienia');
   if(h(d,'age_group')&&(isN(d,'age_group','noworodek')||isN(d,'age_group','niemowlę')))w.push('UWAGA: Gorączka u noworodka / niemowlęcia — zawsze pilna diagnostyka');
   if(h(d,'symptoms')&&isN(d,'symptoms','wybroczyny'))w.push('UWAGA: Wybroczyny + gorączka — wykluczyć meningokokemię');
   if(h(d,'symptoms')&&isN(d,'symptoms','sztywność karku'))w.push('UWAGA: Sztywność karku — podejrzenie zapalenia opon');
@@ -820,16 +781,9 @@ alcohol:{steps:[
   if(h(d,'behavior')){var b=pos(d,'behavior');if(b.length)p.push('Zachowanie: '+b.join(', '));}
   if(h(d,'symptoms')){var s=pos(d,'symptoms');if(s.length)p.push('Objawy: '+s.join(', '));}
   if(h(d,'symptoms_other'))p.push(d.symptoms_other.trim());
-  if(h(d,'alcohol_hist')&&d.alcohol_hist!=='odmawia informacji')p.push('Wywiad alkoholowy: '+d.alcohol_hist);
-  else if(d.alcohol_hist==='odmawia informacji')p.push('Odmawia informacji o nawykach alkoholowych');
-  if(h(d,'withdrawal_hist')){var w=pos(d,'withdrawal_hist');if(w.length)p.push('Odstawienie w przeszłości: '+w.join(', '));}
-  if(h(d,'chronic')){var c=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Pacjent neguje choroby przewlekłe');else if(isN(d,'chronic','wywiad niedostępny'))p.push('Wywiad niedostępny');else if(c.length){var ct=c.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('W wywiadzie: '+ct);}}
-  if(h(d,'medications_text'))p.push('Leki: '+d.medications_text.trim());
-  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(isN(d,'allergies','nieznane'))p.push('Alergie nieznane');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
-  if(h(d,'other_subst')){var o=pos(d,'other_subst');if(isN(d,'other_subst','pacjent neguje'))p.push('Neguje spożycie innych substancji');else if(isN(d,'other_subst','brak możliwości'))p.push('Nie można ustalić spożycia innych substancji');else if(o.length)p.push('Inne substancje: '+o.join(', '));}
   return J(p)+'.';
 },genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
-warn:function(d){var w=[];if(!h(d,'consciousness'))w.push('Brak oceny świadomości');if(!h(d,'airway'))w.push('Brak oceny dróg oddechowych');if(!h(d,'symptoms'))w.push('Brak objawów');if(!h(d,'alcohol_hist'))w.push('Brak wywiadu alkoholowego');
+warn:function(d){var w=[];if(!h(d,'consciousness'))w.push('Brak oceny świadomości');if(!h(d,'airway'))w.push('Brak oceny dróg oddechowych');if(!h(d,'symptoms'))w.push('Brak objawów');
   if(h(d,'reason')&&isN(d,'reason','metanol'))w.push('UWAGA: Podejrzenie metanolu/glikolu — pilna diagnostyka i leczenie');
   if(h(d,'reason')&&isN(d,'reason','delirium'))w.push('UWAGA: Delirium tremens — stan zagrożenia życia');
   if(h(d,'symptoms')&&isN(d,'symptoms','uraz głowy'))w.push('UWAGA: Uraz głowy — wykluczyć krwiak wewnątrzczaszkowy');
@@ -877,21 +831,15 @@ psych:{steps:[
   if(h(d,'behavior_other'))p.push(d.behavior_other.trim());
   if(h(d,'orientation')){if(isN(d,'orientation','pełna'))p.push('Orientacja pełna');else if(isN(d,'orientation','brak oceny'))p.push('Ocena orientacji niemożliwa');else{var o=pos(d,'orientation');if(o.length)p.push('Orientacja: '+o.join(', '));}}
   if(h(d,'speech'))p.push('Mowa: '+d.speech);
-  if(h(d,'self_harm')){var sh=d.self_harm;if(sh==='brak'){}else if(sh==='zaprzecza')p.push('Zaprzecza myślom samobójczym');else if(sh==='odmawia odpowiedzi')p.push('Odmawia odpowiedzi o myśli samobójcze');else p.push(cap(sh));}
+  if(h(d,'self_harm')){var sh=d.self_harm;if(sh==='brak'){}else if(sh==='zaprzecza')p.push('Zaprzecza myślom samobójczym');else if(sh==='odmawia odpowiedzi')p.push('Odmawia odpowiedzi o myśli samobójcze');else if(sh==='stare ślady')p.push('Stare ślady samookaleczeń');else if(sh==='próba przerwana')p.push('Próba samobójcza przerwana');else if(sh==='myśli z planem')p.push('Myśli samobójcze z planem');else if(sh==='myśli bez planu')p.push('Myśli samobójcze bez planu');else p.push(cap(sh));}
   if(h(d,'harm_oth')&&!isN(d,'harm_oth','brak zagrożenia'))p.push('Heteroagresja: '+d.harm_oth);
-  if(h(d,'subst')){var s=pos(d,'subst');if(isN(d,'subst','pacjent neguje'))p.push('Neguje substancje psychoaktywne');else if(isN(d,'subst','brak ustalenia'))p.push('Substancje nie do ustalenia');else if(s.length)p.push('Substancje: '+s.join(', '));}
-  if(h(d,'psych_hx')){var hx=pos(d,'psych_hx');if(isN(d,'psych_hx','bez wywiadu'))p.push('Bez obciążeń psychiatrycznych');else if(isN(d,'psych_hx','odmawia'))p.push('Odmawia podania wywiadu');else if(hx.length){var hxt=hx.join(', ');if(h(d,'psych_hx_other'))hxt+=', '+d.psych_hx_other.trim();p.push('Psychiatria: '+hxt);}}
-  else if(h(d,'psych_hx_other'))p.push('Psychiatria: '+d.psych_hx_other.trim());
-  if(h(d,'psych_meds'))p.push('Leki: '+d.psych_meds.trim());
-  if(h(d,'compliance')){var c=d.compliance;if(c==='przyjmuje regularnie')p.push('Leki przyjmuje regularnie');else if(c==='odstawił')p.push('Odstawił leki samowolnie');else if(c==='nieregularnie')p.push('Nieregularne przyjmowanie');else if(c==='nigdy nie leczony'){}else if(c==='odmawia informacji')p.push('Odmawia informacji o leczeniu');}
-  if(h(d,'chronic')){var ch=pos(d,'chronic');if(isN(d,'chronic','neguje'))p.push('Inne choroby neguje');else if(ch.length){var ct=ch.join(', ');if(h(d,'chronic_other'))ct+=', '+d.chronic_other.trim();p.push('Ponadto: '+ct);}}
-  if(h(d,'allergies')){if(isN(d,'allergies','neguje'))p.push('Alergie neguje');else if(h(d,'allergies_text'))p.push('Alergie: '+d.allergies_text.trim());}
+  if(h(d,'subst')){var s=pos(d,'subst');if(isN(d,'subst','pacjent neguje'))p.push('Neguje substancje psychoaktywne');else if(isN(d,'subst','brak ustalenia'))p.push('Użycie substancji psychoaktywnych nie do ustalenia');else if(s.length)p.push('Substancje: '+s.join(', '));}
   return J(p)+'.';
 },genO:function(d){
   var p=[];if(h(d,'police')&&!isN(d,'police','nie wzywano'))p.push('Policja: '+d.police);
   if(h(d,'legal')&&d.legal!=='nie dotyczy')p.push(cap(d.legal));
   if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';
-},warn:function(d){var w=[];if(!h(d,'reason'))w.push('Brak powodu');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'behavior'))w.push('Brak zachowania');if(!h(d,'self_harm'))w.push('Brak oceny autoagresji');if(!h(d,'harm_oth'))w.push('Brak oceny heteroagresji');if(!h(d,'psych_hx'))w.push('Brak wywiadu');if(!h(d,'subst'))w.push('Brak substancji');if(!h(d,'legal'))w.push('Brak statusu prawnego');return w;}
+},warn:function(d){var w=[];if(!h(d,'reason'))w.push('Brak powodu');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'behavior'))w.push('Brak zachowania');if(!h(d,'self_harm'))w.push('Brak oceny autoagresji');if(!h(d,'harm_oth'))w.push('Brak oceny heteroagresji');if(!h(d,'subst'))w.push('Brak substancji');if(!h(d,'legal'))w.push('Brak statusu prawnego');return w;}
 }
 
 };
