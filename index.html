@@ -128,7 +128,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 <div id="welcome-modal" class="modal-overlay">
   <div class="modal-content">
     <h2>KMCR Asystent</h2>
-    <p class="version">Wersja 0.1 (luty 26)</p>
+    <p class="version">Wersja 0.2 (marzec 26)</p>
     <p class="author">Autor: jaqbek</p>
     <p class="contact">
       Masz pomysł czego tu brakuje? Napisz na:<br>
@@ -157,7 +157,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 function J(p){return p.filter(function(x){return x&&String(x).trim().length>0}).join('. ')}
 function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):''}
 function h(d,k){var v=d[k];if(v==null)return false;if(Array.isArray(v))return v.length>0;if(typeof v==='string')return v.trim().length>0;return true}
-function pos(d,k){if(!h(d,k)||!Array.isArray(d[k]))return[];return d[k].filter(function(x){var l=x.toLowerCase();return l.indexOf('brak ')<0&&l.indexOf('neguje')<0&&l.indexOf('nie dotyczy')<0&&l.indexOf('nie przyjmuje')<0&&l.indexOf('nie posiada')<0&&l.indexOf('nie stosował')<0&&l.indexOf('nic nie')<0&&l.indexOf('pacjent neguje')<0&&l.indexOf('bez objawów')<0&&l.indexOf('bez obciążeń')<0&&l.indexOf('zaprzecza')<0&&l.indexOf('odmawia')<0&&l.indexOf('pełna auto')<0&&l.indexOf('nie wzywano')<0&&l.indexOf('prawidłowy szmer')<0&&l.indexOf('bez zagrożenia')<0&&l.indexOf('bez zachowań')<0&&l.indexOf('bez wywiadu')<0&&l.indexOf('bez hipoglikemii')<0&&l.indexOf('bez leczenia')<0&&l.indexOf('bez krwawienia')<0&&l.indexOf('nie pamięta')<0&&l.indexOf('nigdy nie')<0&&l.indexOf('pacjent nie zna')<0&&l.indexOf('trzeźwy')<0&&l.indexOf('nie promieniuje')<0&&l.indexOf('bez promieniowania')<0&&l.indexOf('prawidłowa czynność')<0&&l.indexOf('bez skurczów')<0&&l.indexOf('bez deficytów')<0&&l.indexOf('bez widocznych')<0&&l.indexOf('bez dolegliwości')<0&&l.indexOf('bez obrażeń')<0})}
+function pos(d,k){if(!h(d,k)||!Array.isArray(d[k]))return[];return d[k].filter(function(x){var l=x.toLowerCase();return l.indexOf('brak ')<0&&l.indexOf('neguje')<0&&l.indexOf('nie dotyczy')<0&&l.indexOf('nie przyjmuje')<0&&l.indexOf('nie posiada')<0&&l.indexOf('nie stosował')<0&&l.indexOf('nic nie')<0&&l.indexOf('pacjent neguje')<0&&l.indexOf('bez objawów')<0&&l.indexOf('bez obciążeń')<0&&l.indexOf('zaprzecza')<0&&l.indexOf('odmawia')<0&&l.indexOf('pełna auto')<0&&l.indexOf('nie wzywano')<0&&l.indexOf('prawidłowy szmer')<0&&l.indexOf('bez zagrożenia')<0&&l.indexOf('bez zachowań')<0&&l.indexOf('bez wywiadu')<0&&l.indexOf('bez hipoglikemii')<0&&l.indexOf('bez leczenia')<0&&l.indexOf('bez krwawienia')<0&&l.indexOf('nie pamięta')<0&&l.indexOf('nigdy nie')<0&&l.indexOf('pacjent nie zna')<0&&l.indexOf('trzeźwy')<0&&l.indexOf('nie promieniuje')<0&&l.indexOf('bez promieniowania')<0&&l.indexOf('prawidłowa czynność')<0&&l.indexOf('bez skurczów')<0&&l.indexOf('bez deficytów')<0&&l.indexOf('bez widocznych')<0&&l.indexOf('bez dolegliwości')<0&&l.indexOf('bez obrażeń')<0&&l.indexOf('nie oceniano')<0&&l.indexOf('nie wykonywano')<0&&l.indexOf('brak oparzeń')<0&&l.indexOf('brak lokalizacji')<0})}
 function isN(d,k,n){if(!h(d,k))return false;var v=d[k];if(Array.isArray(v))return v.some(function(x){return x.toLowerCase().indexOf(n.toLowerCase())>=0});return String(v).toLowerCase().indexOf(n.toLowerCase())>=0}
 
 function hB(d){
@@ -191,6 +191,9 @@ var CATS=[
   {k:'psych',i:'\uD83D\uDCAC',l:'Psychiatria',s:'Pobudzenie, kryzys, psychoza'},
   {k:'syncope',i:'💫',l:'Zasłabnięcie',s:'Omdlenie, utrata przytomności'},
   {k:'general',i:'📋',l:'Inne / ogólne',s:'Niesklasyfikowane zdarzenie'},
+  {k:'burns',i:'🔥',l:'Oparzenia',s:'TBSA, Parkland, inhalacja'},
+  {k:'infusion',i:'💉',l:'Pompa infuzyjna',s:'Dawkowanie, rozcieńczenie, ml/h'},
+  {k:'pocus',i:'🫀',l:'POCUS / USG',s:'eFAST, serce, płuca, IVC'},
   {k:'coffee',i:'☕',l:'Postaw kawę',s:'Wesprzyj autora'},
   {k:'email', i:'✉️', l:'Wyślij e-mail', s:'Pomysły i sugestie', mobileOnly: true}
 ];
@@ -920,6 +923,256 @@ general:{steps:[
   return J(p)+'.';
 },genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
 warn:function(d){var w=[];if(!h(d,'reason'))w.push('Brak powodu wezwania');if(!h(d,'consciousness'))w.push('Brak świadomości');return w;}
+},
+
+// POCUS
+burns:{steps:[
+{id:"bm",title:"Mechanizm",fields:[
+  {id:"burn_type",label:"Typ oparzenia",type:"single",options:["płomień","gorący płyn (oparzenie)","para","kontakt z gorącą powierzchnią","chemiczne — kwas","chemiczne — zasada","chemiczne — inne","elektryczne — niskie napięcie (<1000 V)","elektryczne — wysokie napięcie (≥1000 V)","błyskawica","odmrożenie","oparzenie słoneczne"]},
+  {id:"environment",label:"Okoliczności",type:"multi",options:["zamknięta przestrzeń","wybuch / eksplozja","ekspozycja na dym","pożar budynku","pożar pojazdu","wypadek w pracy","w domu","na zewnątrz","brak szczególnych okoliczności"]},
+  {id:"age_group",label:"Grupa wiekowa",type:"single",options:["niemowlę (<1 r.ż.)","dziecko 1–5 lat","dziecko 5–10 lat","dziecko 10–15 lat","dorosły (>15 lat)"]},
+  {id:"weight",label:"Masa ciała",type:"text",placeholder:"np. 70 kg, 15 kg"}
+]},
+{id:"bs",title:"Powierzchnia i głębokość",fields:[
+  {id:"burn_regions",label:"Okolice ciała",type:"multi",options:["głowa i szyja","kk. górna P","kk. górna L","tułów przód","tułów tył","kk. dolna P","kk. dolna L","krocze"]},
+  {id:"burn_tbsa_custom",label:"Dodatkowa / korekta TBSA (%)",type:"text",placeholder:"np. +5% dłoń, -4% fragmentarycznie"},
+  {id:"burn_depth",label:"Głębokość",type:"multi",options:["I° (rumień, ból)","II° powierzchowny (pęcherze, ból)","II° głęboki (pęcherze, zmniejszony ból)","III° (sucha, biała/brunatna skóra, bez bólu)","IV° (zwęglenie)"]},
+  {id:"circumferential",label:"Oparzenia okrężne",type:"multi",options:["okrężne kk. górnej","okrężne kk. dolnej","okrężne klatki piersiowej","okrężne szyi","brak oparzeń okrężnych"]},
+  {id:"critical_loc",label:"Lokalizacje krytyczne",type:"multi",options:["twarz","szyja","dłonie","stopy","krocze / genitalia","okolice stawów","brak lokalizacji krytycznej"]}
+]},
+{id:"ba",title:"Drogi oddechowe i stan",fields:[
+  {id:"inhalation",label:"Cechy oparzenia inhalacyjnego",type:"multi",options:["osmalone włosy nosowe","sadza w nosie / gardle","chrypka","stridor","duszność","kaszel z czarną plwociną","obrzęk twarzy / warg","oparzenie jamy ustnej","bez cech oparzenia dróg oddechowych"]},
+  {id:"consciousness",label:"Świadomość",type:"single",options:["przytomny, kontakt pełny","splątany","senny","reaguje na ból","nieprzytomny"]},
+  {id:"pain_nrs",label:"Ból NRS",type:"single",options:["0 — ból ustąpił","1-3 łagodny","4-6 umiarkowany","7-8 silny","9-10 najsilniejszy","nie ocenia (nieprzytomny/III°)"]},
+  {id:"co_poisoning",label:"Zatrucie CO",type:"single",options:["podejrzenie zatrucia CO","potwierdzone zatrucie CO","wykluczone","nie oceniano"]}
+]},
+{id:"bd",title:"Dodatkowe",fields:[
+  {id:"associated",label:"Urazy towarzyszące",type:"multi",options:["uraz mechaniczny","uraz głowy","złamanie","krwawienie","bez urazów towarzyszących"]},
+  {id:"cooling",label:"Schładzanie",type:"single",options:["schładzanie wodą (prawidłowe)","schładzanie lodem (nieprawidłowe)","nie schładzano","nie dotyczy"]},
+  {id:"prior_tx",label:"Zaopatrzenie przed ZRM",type:"multi",options:["opatrunek jałowy","folia aluminiowa","maść / krem (nieprawidłowe)","leki p-bólowe","nic nie stosowano"]},
+  {id:"notes",label:"Uwagi",type:"text",placeholder:""}
+]}
+],gen:function(d){
+  var p=['Wezwanie z powodu oparzenia'];
+  if(h(d,'burn_type'))p.push('Typ: '+d.burn_type);
+  if(h(d,'environment')){var ev=pos(d,'environment');if(ev.length)p.push('Okoliczności: '+ev.join(', '));}
+  if(h(d,'age_group'))p.push('Grupa wiekowa: '+d.age_group);
+  var tbsa=0;
+  if(h(d,'burn_regions')){
+    var regs=d.burn_regions;
+    var map={
+      'niemowlę (<1 r.ż.)':{h:18,a:9,f:18,b:18,l:14,p:1},
+      'dziecko 1–5 lat':{h:14,a:9,f:18,b:18,l:16,p:1},
+      'dziecko 5–10 lat':{h:13,a:9,f:18,b:18,l:16,p:1},
+      'dziecko 10–15 lat':{h:9,a:9,f:18,b:18,l:18,p:1},
+      'dorosły (>15 lat)':{h:9,a:9,f:18,b:18,l:18,p:1}
+    };
+    var ag=d.age_group||'dorosły (>15 lat)';
+    var m=map[ag]||map['dorosły (>15 lat)'];
+    regs.forEach(function(r){
+      if(r==='głowa i szyja')tbsa+=m.h;
+      else if(r==='kk. górna P'||r==='kk. górna L')tbsa+=m.a;
+      else if(r==='tułów przód')tbsa+=m.f;
+      else if(r==='tułów tył')tbsa+=m.b;
+      else if(r==='kk. dolna P'||r==='kk. dolna L')tbsa+=m.l;
+      else if(r==='krocze')tbsa+=m.p;
+    });
+    if(h(d,'burn_tbsa_custom')){
+      var cm=d.burn_tbsa_custom.match(/([+-]?\d+)/);
+      if(cm)tbsa+=parseInt(cm[1]);
+    }
+    if(tbsa>0){
+      p.push('TBSA: ok. '+tbsa+'%');
+      p.push('Oparzenia w obrębie: '+regs.join(', '));
+    }
+  }
+  if(h(d,'burn_depth'))p.push('Głębokość: '+d.burn_depth.join(', '));
+  if(h(d,'circumferential')){var ci=pos(d,'circumferential');if(ci.length)p.push('Oparzenia okrężne: '+ci.join(', '));}
+  if(h(d,'critical_loc')){var cl=pos(d,'critical_loc');if(cl.length)p.push('Lokalizacje krytyczne: '+cl.join(', '));}
+  if(h(d,'inhalation')){var inh=pos(d,'inhalation');if(inh.length)p.push('Cechy oparzenia dróg oddechowych: '+inh.join(', '));
+    else if(isN(d,'inhalation','bez cech'))p.push('Bez cech oparzenia dróg oddechowych');}
+  if(h(d,'consciousness'))p.push('Świadomość: '+d.consciousness);
+  var n=nrs(d,'pain_nrs');if(n)p.push(n);
+  if(h(d,'co_poisoning')&&d.co_poisoning!=='nie oceniano')p.push('Zatrucie CO: '+d.co_poisoning);
+  if(h(d,'associated')){var as=pos(d,'associated');if(as.length)p.push('Urazy towarzyszące: '+as.join(', '));}
+  if(h(d,'cooling')&&d.cooling!=='nie dotyczy')p.push('Schładzanie: '+d.cooling);
+  if(h(d,'prior_tx')){var tx=pos(d,'prior_tx');if(tx.length)p.push('Przed ZRM: '+tx.join(', '));}
+  if(h(d,'burn_regions')&&h(d,'weight')){
+    var wm=d.weight.match(/(\d+)/);
+    if(wm&&tbsa>=15){
+      var kg=parseInt(wm[1]);
+      var park=4*tbsa*kg;
+      var h8=Math.round(park/2);
+      p.push('Parkland: '+park+' ml/24h ('+h8+' ml w pierwszych 8h)');
+    }
+  }
+  return J(p)+'.';
+},genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
+warn:function(d){var w=[];
+  if(!h(d,'burn_type'))w.push('Brak typu oparzenia');
+  if(!h(d,'age_group'))w.push('Brak grupy wiekowej');
+  if(!h(d,'burn_regions'))w.push('Brak powierzchni oparzenia (burn_regions)');
+  if(!h(d,'burn_depth'))w.push('Brak głębokości oparzenia');
+  if(!h(d,'inhalation'))w.push('Brak oceny dróg oddechowych');
+  if(isN(d,'environment','zamknięta przestrzeń')&&!h(d,'inhalation'))w.push('UWAGA: Zamknięta przestrzeń — podejrzenie oparzenia inhalacyjnego');
+  if(h(d,'circumferential')&&pos(d,'circumferential').length>0)w.push('UWAGA: Oparzenie okrężne — rozważ escharotomię');
+  if(h(d,'burn_type')&&(d.burn_type.indexOf('elektryczne')>=0||d.burn_type==='błyskawica'))w.push('UWAGA: Oparzenie elektryczne — monitor EKG, rabdomioliza');
+  if(!h(d,'weight'))w.push('Brak masy ciała (do wzoru Parklanda)');
+  return w;}
+},
+
+infusion:{steps:[
+{id:"il",title:"Lek i pacjent",fields:[
+  {id:"drug",label:"Lek",type:"single",options:["Noradrenalina","Adrenalina (wlew)","Dopamina","Dobutamina","Nitrogliceryna","Amiodaron","MgSO4","Heparyna","Insulina","Midazolam","Fentanyl","Propofol 1%","Ketamina","Oksytocyna","Nalokson (wlew)","inny (kalkulator ogólny)"]},
+  {id:"drug_custom",label:"Nazwa leku (przy wyborze 'inny')",type:"text",placeholder:"np. Deksmedetomidyna"},
+  {id:"weight",label:"Masa ciała (kg)",type:"text",placeholder:"np. 70"}
+]},
+{id:"ip",title:"Rozcieńczenie",fields:[
+  {id:"drug_qty",label:"Ilość leku (liczba)",type:"text",placeholder:"np. 4"},
+  {id:"drug_unit",label:"Jednostka leku",type:"single",options:["mg","µg","g","j. (jednostki)"]},
+  {id:"total_volume",label:"Objętość końcowa (ml)",type:"text",placeholder:"np. 50"},
+  {id:"solvent",label:"Rozpuszczalnik",type:"single",options:["NaCl 0.9%","Glukoza 5%","Ringer","woda do iniekcji","gotowy roztwór (bez rozcieńczania)"]}
+]},
+{id:"id",title:"Dawkowanie",fields:[
+  {id:"dose_value",label:"Dawka (liczba)",type:"text",placeholder:"np. 0.1"},
+  {id:"dose_unit",label:"Jednostka dawki",type:"single",options:["µg/kg/min","µg/min","µg/kg/h","mg/kg/h","mg/h","mg/min","j./kg/h","j./h","ml/h"]}
+]},
+{id:"iu",title:"Uwagi",fields:[
+  {id:"route",label:"Droga podania",type:"single",options:["pompa strzykawkowa","pompa objętościowa","grawitacyjnie (kroplówka)"]},
+  {id:"notes",label:"Uwagi",type:"text",placeholder:""}
+]}
+],gen:function(d){
+  var p=['Pompa infuzyjna'];
+  var DR={
+    'Noradrenalina':{a:4,u:'mg',v:50,du:'µg/kg/min',lo:0.05,hi:1.0,wt:1,f:1000},
+    'Adrenalina (wlew)':{a:1,u:'mg',v:50,du:'µg/kg/min',lo:0.01,hi:0.5,wt:1,f:1000},
+    'Dopamina':{a:200,u:'mg',v:50,du:'µg/kg/min',lo:2,hi:20,wt:1,f:1000},
+    'Dobutamina':{a:250,u:'mg',v:50,du:'µg/kg/min',lo:2,hi:20,wt:1,f:1000},
+    'Nitrogliceryna':{a:25,u:'mg',v:50,du:'µg/min',lo:10,hi:200,wt:0,f:1000},
+    'Amiodaron':{a:900,u:'mg',v:50,du:'mg/min',lo:0.5,hi:1.0,wt:0,f:1},
+    'MgSO4':{a:2000,u:'mg',v:50,du:'mg/h',lo:1000,hi:2000,wt:0,f:1},
+    'Heparyna':{a:25000,u:'j.',v:50,du:'j./h',lo:500,hi:1500,wt:0,f:1},
+    'Insulina':{a:50,u:'j.',v:50,du:'j./kg/h',lo:0.05,hi:0.1,wt:1,f:1},
+    'Midazolam':{a:15,u:'mg',v:50,du:'mg/kg/h',lo:0.03,hi:0.2,wt:1,f:1},
+    'Fentanyl':{a:0.5,u:'mg',v:50,du:'µg/kg/h',lo:0.5,hi:3.0,wt:1,f:1000},
+    'Propofol 1%':{a:200,u:'mg',v:20,du:'mg/kg/h',lo:1,hi:4,wt:1,f:1},
+    'Ketamina':{a:200,u:'mg',v:50,du:'mg/kg/h',lo:0.1,hi:0.5,wt:1,f:1},
+    'Oksytocyna':{a:10,u:'j.',v:50,du:'j./h',lo:1,hi:20,wt:0,f:1},
+    'Nalokson (wlew)':{a:0.4,u:'mg',v:50,du:'mg/h',lo:0.4,hi:0.8,wt:0,f:1}
+  };
+  var dn=d.drug||'';
+  var dr=DR[dn]||null;
+  var custom=!dr;
+  if(custom&&h(d,'drug_custom'))p.push('Lek: '+d.drug_custom.trim());
+  else if(dn&&dn!=='inny (kalkulator ogólny)')p.push('Lek: '+dn);
+  var qty=parseFloat(d.drug_qty)||(dr?dr.a:0);
+  var vol=parseFloat(d.total_volume)||(dr?dr.v:0);
+  var dose=parseFloat(d.dose_value)||0;
+  var wm=d.weight?d.weight.match(/(\d+[\.,]?\d*)/):null;
+  var wt=wm?parseFloat(wm[1].replace(',','.')):0;
+  var dUnit=dr?dr.u:(d.drug_unit||'mg');
+  var doseU=dr?dr.du:(d.dose_unit||'');
+  if(qty>0&&vol>0){
+    var conc=qty/vol;
+    p.push('Rozcieńczenie: '+qty+' '+dUnit+' / '+vol+' ml'+(h(d,'solvent')&&d.solvent!=='gotowy roztwór (bez rozcieńczania)'?' '+d.solvent:''));
+    p.push('Stężenie: '+conc.toFixed(4).replace(/\.?0+$/,'')+' '+dUnit+'/ml');
+  }
+  if(qty>0&&vol>0&&dose>0&&doseU){
+    var fac=dr?dr.f:1;
+    if(custom){
+      fac=1;
+      if(doseU.indexOf('µg')>=0&&dUnit==='mg')fac=1000;
+      if(doseU.indexOf('µg')>=0&&dUnit==='g')fac=1e6;
+      if(doseU.indexOf('mg')>=0&&dUnit==='g')fac=1000;
+    }
+    var concD=qty*fac/vol;
+    var rate=dose;
+    if(doseU.indexOf('/min')>=0)rate=rate*60;
+    if(doseU.indexOf('/kg')>=0)rate=rate*wt;
+    if(doseU==='ml/h'){
+      p.push('Prędkość: '+dose+' ml/h');
+    }else if(concD>0){
+      var mlh=rate/concD;
+      p.push('Dawka: '+dose+' '+doseU);
+      if(wt>0&&doseU.indexOf('/kg')>=0)p.push('Masa ciała: '+wt+' kg');
+      p.push('Prędkość: '+mlh.toFixed(2).replace(/\.?0+$/,'')+' ml/h');
+      if(dr){
+        p.push('Zakres dawek: '+dr.lo+'–'+dr.hi+' '+dr.du);
+        if(dose<dr.lo||dose>dr.hi)p.push('⚠ Dawka poza zakresem standardowym!');
+      }
+    }
+  }
+  if(h(d,'route'))p.push('Droga: '+d.route);
+  return J(p)+'.';
+},genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
+warn:function(d){var w=[];
+  var DR2={'Noradrenalina':1,'Adrenalina (wlew)':1,'Dopamina':1,'Dobutamina':1,'Nitrogliceryna':0,'Amiodaron':0,'MgSO4':0,'Heparyna':0,'Insulina':1,'Midazolam':1,'Fentanyl':1,'Propofol 1%':1,'Ketamina':1,'Oksytocyna':0,'Nalokson (wlew)':0};
+  var dn=d.drug||'';
+  var custom=dn==='inny (kalkulator ogólny)';
+  var preset=!custom&&DR2.hasOwnProperty(dn);
+  if(!h(d,'drug'))w.push('Brak wyboru leku');
+  if(custom&&!h(d,'drug_qty'))w.push('Brak ilości leku');
+  if(custom&&!h(d,'total_volume'))w.push('Brak objętości końcowej');
+  if(custom&&!h(d,'drug_unit'))w.push('Brak jednostki leku');
+  if(custom&&!h(d,'dose_unit'))w.push('Brak jednostki dawki');
+  if(!h(d,'dose_value'))w.push('Brak dawki');
+  var needsWt=preset?DR2[dn]:false;
+  if(custom&&h(d,'dose_unit')&&d.dose_unit.indexOf('/kg')>=0)needsWt=true;
+  if(needsWt&&!h(d,'weight'))w.push('Brak masy ciała (wymagana dla tego leku)');
+  return w;}
+},
+
+pocus:{steps:[
+  {id:"ef",title:"eFAST",fields:[
+    {id:"pocus_ruq",label:"RUQ (Morrison)",type:"single",options:["bez wolnego płynu","wolny płyn (+)","obraz niejednoznaczny","nie oceniano"]},
+    {id:"pocus_luq",label:"LUQ (śledzionowo-nerkowa)",type:"single",options:["bez wolnego płynu","wolny płyn (+)","obraz niejednoznaczny","nie oceniano"]},
+    {id:"pocus_pelvis",label:"Miednica",type:"single",options:["bez wolnego płynu","wolny płyn (+)","obraz niejednoznaczny","nie oceniano"]},
+    {id:"pocus_pericard",label:"Osierdzie",type:"single",options:["bez płynu w osierdziu","niewielki płyn (<1 cm)","umiarkowany płyn","duży płyn (>2 cm)","cechy tamponady (kolaps PK)","nie oceniano"]}
+  ]},
+  {id:"ca",title:"Serce",fields:[
+    {id:"pocus_lv",label:"Kurczliwość LV",type:"single",options:["prawidłowa kurczliwość","hipokinezy segmentarne","hipokinezy rozlane","akinezy","ciężka dysfunkcja skurczowa LV","nie oceniano"]},
+    {id:"pocus_rv",label:"Prawa komora",type:"single",options:["PK prawidłowa","powiększona PK (RV>LV)","D-sign (spłaszczenie przegrody)","nie oceniano"]},
+    {id:"pocus_rhythm",label:"Czynność serca",type:"single",options:["miarowa czynność serca","niemiarowa czynność serca","brak efektywnej czynności (PEA)","asystolia","nie oceniano"]},
+    {id:"pocus_cardiac_notes",label:"Dodatkowe obserwacje",type:"text",placeholder:"np. masywna niedomykalność, wegetacje, skrzeplina..."}
+  ]},
+  {id:"lu",title:"Płuca",fields:[
+    {id:"pocus_lung_r",label:"Płuco prawe",type:"multi",options:["ślizganie (+)","brak ślizgania (podejrzenie odmy)","lung point (+)","linie A (norma)","linie B (≥3 w polu)","konsolidacja","wysięk opłucnowy","nie oceniano"]},
+    {id:"pocus_lung_l",label:"Płuco lewe",type:"multi",options:["ślizganie (+)","brak ślizgania (podejrzenie odmy)","lung point (+)","linie A (norma)","linie B (≥3 w polu)","konsolidacja","wysięk opłucnowy","nie oceniano"]},
+    {id:"pocus_lung_notes",label:"Dodatkowe obserwacje",type:"text",placeholder:"np. linie B rozsiane obustronnie, konsolidacja z aerobronchogramem..."}
+  ]},
+  {id:"iv",title:"IVC / naczynia",fields:[
+    {id:"pocus_ivc",label:"IVC",type:"single",options:["prawidłowa (1.5–2.5 cm, kolapsuje >50%)","poszerzona (>2.5 cm, brak kolapsu)","wąska (<1.5 cm, pełny kolaps)","nie oceniano"]},
+    {id:"pocus_aorta",label:"Aorta brzuszna",type:"single",options:["prawidłowa (<3 cm)","poszerzona (3–5 cm)","tętniak (≥5 cm)","podejrzenie rozwarstwienia","nie oceniano"]},
+    {id:"pocus_dvt",label:"Żyły kk. dolnych",type:"single",options:["nie wykonywano","żż. ściśliwe (norma)","nieściśliwa ż. udowa","nieściśliwa ż. podkolanowa"]},
+    {id:"pocus_notes",label:"Uwagi",type:"text",placeholder:""}
+  ]}
+],gen:function(d){
+  var p=['Badanie POCUS'];
+  var fast=[];
+  if(h(d,'pocus_ruq')&&d.pocus_ruq!=='nie oceniano')fast.push('RUQ '+d.pocus_ruq);
+  if(h(d,'pocus_luq')&&d.pocus_luq!=='nie oceniano')fast.push('LUQ '+d.pocus_luq);
+  if(h(d,'pocus_pelvis')&&d.pocus_pelvis!=='nie oceniano')fast.push('miednica '+d.pocus_pelvis);
+  if(h(d,'pocus_pericard')&&d.pocus_pericard!=='nie oceniano')fast.push('osierdzie '+d.pocus_pericard);
+  if(fast.length)p.push('eFAST — '+fast.join(', '));
+  var heart=[];
+  if(h(d,'pocus_lv')&&d.pocus_lv!=='nie oceniano')heart.push(d.pocus_lv);
+  if(h(d,'pocus_rv')&&d.pocus_rv!=='nie oceniano')heart.push(d.pocus_rv);
+  if(h(d,'pocus_rhythm')&&d.pocus_rhythm!=='nie oceniano')heart.push(d.pocus_rhythm);
+  if(heart.length)p.push('Serce — '+heart.join(', '));
+  if(h(d,'pocus_cardiac_notes'))p.push(d.pocus_cardiac_notes.trim());
+  if(h(d,'pocus_lung_r')){var lr=pos(d,'pocus_lung_r');if(lr.length)p.push('Płuco P — '+lr.join(', '));}
+  if(h(d,'pocus_lung_l')){var ll=pos(d,'pocus_lung_l');if(ll.length)p.push('Płuco L — '+ll.join(', '));}
+  if(h(d,'pocus_lung_notes'))p.push(d.pocus_lung_notes.trim());
+  if(h(d,'pocus_ivc')&&d.pocus_ivc!=='nie oceniano')p.push('IVC — '+d.pocus_ivc);
+  if(h(d,'pocus_aorta')&&d.pocus_aorta!=='nie oceniano')p.push('Aorta — '+d.pocus_aorta);
+  if(h(d,'pocus_dvt')&&d.pocus_dvt!=='nie wykonywano')p.push('Żyły kk. dolnych — '+d.pocus_dvt);
+  return J(p)+'.';
+},genO:function(d){var p=[];if(h(d,'pocus_notes'))p.push(d.pocus_notes.trim());return p.length?J(p)+'.':'';},
+warn:function(d){var w=[];
+  if(!h(d,'pocus_ruq')&&!h(d,'pocus_luq')&&!h(d,'pocus_pelvis')&&!h(d,'pocus_pericard'))w.push('Brak oceny eFAST');
+  if(!h(d,'pocus_lv')&&!h(d,'pocus_rv'))w.push('Brak oceny serca');
+  if(!h(d,'pocus_lung_r')&&!h(d,'pocus_lung_l'))w.push('Brak oceny płuc');
+  return w;}
 }
 
 };
@@ -939,7 +1192,7 @@ var SAMPLE_STEP={id:"sample",title:"Wywiad / SAMPLE",fields:[
 var cur=null,step=0,D={},allSteps=[];
 function show(id){document.querySelectorAll('.S').forEach(function(s){s.classList.remove('a')});document.getElementById(id).classList.add('a');document.getElementById('nf').style.display=id==='s1'?'flex':'none';window.scrollTo(0,0)}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('v');setTimeout(function(){t.classList.remove('v')},2000)}
-function start(k){cur=SC[k];allSteps=[SAMPLE_STEP].concat(cur.steps);step=0;D={};show('s1');render()}
+function start(k){cur=SC[k];allSteps=(k==='pocus'||k==='infusion')?cur.steps:[SAMPLE_STEP].concat(cur.steps);step=0;D={};show('s1');render()}
 function R(){cur=null;step=0;D={};show('s0')}
 function gB(){show('s1');render()}
 function nS(){sv();if(step<allSteps.length-1){step++;render();window.scrollTo(0,0)}else genOut()}
