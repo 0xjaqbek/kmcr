@@ -91,7 +91,14 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
   animation: fadeIn 0.3s ease;
 }
 .modal-content h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
-.modal-content .version { font-size: 12px; color: var(--dm); margin-bottom: 16px; }
+.modal-content .version { font-size: 12px; color: var(--dm); margin-bottom: 4px; }
+.changelog-link { font-size: 11px; color: var(--dm); cursor:pointer; margin-bottom:16px; display:inline-block; text-decoration:underline; opacity:0.7; transition:opacity 0.2s; }
+.changelog-link:hover { opacity:1; }
+.changelog-body { text-align:left; max-height:60vh; overflow-y:auto; }
+.changelog-ver { font-size:13px; font-weight:600; color:var(--tx); margin-bottom:6px; margin-top:16px; }
+.changelog-ver:first-child { margin-top:0; }
+.changelog-item { font-size:12px; color:var(--dm); padding-left:14px; position:relative; margin-bottom:3px; }
+.changelog-item::before { content:"\2022"; position:absolute; left:0; color:var(--dm); }
 .modal-content .author { font-size: 14px; margin-bottom: 16px; }
 .modal-content .contact { font-size: 13px; line-height: 1.6; margin-bottom: 24px; }
 .modal-content a { color: var(--ac); font-weight: 500; }
@@ -123,6 +130,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
   <div class="modal-content">
     <h2>KMCR Asystent</h2>
     <p class="version">Wersja 0.2 (marzec 26)</p>
+    <span class="changelog-link" id="open-changelog">Co nowego?</span>
     <div class="toggle-row">
       <span class="toggle-label">Podpowiedzi kliniczne</span>
       <label class="toggle"><input type="checkbox" id="hints-toggle" checked><span class="slider"></span></label>
@@ -133,6 +141,26 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
       <a href="mailto:jaqbek.eth@gmail.com">jaqbek.eth@gmail.com</a>
     </p>
     <button id="close-modal" class="bp">Rozumiem</button>
+  </div>
+</div>
+<div id="changelog-modal" class="modal-overlay" style="display:none">
+  <div class="modal-content">
+    <h2>Co nowego?</h2>
+    <div class="changelog-body">
+      <div class="changelog-ver">Wersja 0.2 (marzec 2026)</div>
+      <div class="changelog-item">Podpowiedzi kliniczne dla każdego scenariusza</div>
+      <div class="changelog-item">Historia zmian (Co nowego?)</div>
+      <div class="changelog-item">Scenariusze: POCUS, oparzenia, pompa infuzyjna</div>
+      <div class="changelog-item">Scenariusze: zasłabnięcie, inne/ogólne</div>
+      <div class="changelog-item">Krok SAMPLE jako pierwszy w każdym scenariuszu</div>
+      <div class="changelog-item">Tryb offline (PWA)</div>
+      <div class="changelog-ver">Wersja 0.1 (luty 2026)</div>
+      <div class="changelog-item">Pierwsza wersja aplikacji</div>
+      <div class="changelog-item">14 scenariuszy klinicznych</div>
+      <div class="changelog-item">Generowanie tekstu i kopiowanie</div>
+      <div class="changelog-item">Ostrzeżenia i wskazówki na ekranie wyniku</div>
+    </div>
+    <button id="close-changelog" class="bp" style="margin-top:20px">Zamknij</button>
   </div>
 </div>
 <div class="C">
@@ -1272,6 +1300,12 @@ function fb(t,m){var a=document.createElement('textarea');a.value=t;a.style.cssT
 })();
 document.getElementById('close-modal').addEventListener('click', function() {
   document.getElementById('welcome-modal').style.display = 'none';
+});
+document.getElementById('open-changelog').addEventListener('click', function() {
+  document.getElementById('changelog-modal').style.display = 'flex';
+});
+document.getElementById('close-changelog').addEventListener('click', function() {
+  document.getElementById('changelog-modal').style.display = 'none';
 });
 (function(){var g=document.getElementById('gr');CATS.forEach(function(c){var d=document.createElement('div');d.className='gc';if(c.mobileOnly){d.classList.add('mobile-only')}if(c.k==='coffee'){d.onclick=function(){window.open('https://buycoffee.to/jaqbek','_blank')}}else if(c.k==='email'){d.onclick=function(){window.location.href='mailto:jaqbek.eth@gmail.com?subject=KMCR%20Asystent%20-%20Sugestia'}}else{d.onclick=function(){start(c.k)}};d.innerHTML='<div class="gi">'+c.i+'</div><div class="gl">'+c.l+'</div><div class="gs">'+c.s+'</div>';g.appendChild(d)})})();
 </script>
