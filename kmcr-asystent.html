@@ -101,6 +101,20 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
 .ft a{color:#888;text-decoration:none}
 .ft a:hover{color:#aaa}
 @media(max-width:500px){ .G{grid-template-columns:1fr 1fr} .c{padding:10px 14px; font-size:13px} .mobile-only { display: block; } .ft{display:none} }
+.toggle-row { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:16px; }
+.toggle-label { font-size:13px; color:var(--dm); }
+.toggle { position:relative; width:44px; height:24px; cursor:pointer; }
+.toggle input { opacity:0; width:0; height:0; }
+.toggle .slider { position:absolute; top:0; left:0; right:0; bottom:0; background:var(--bd); border-radius:12px; transition:background 0.2s; }
+.toggle .slider::before { content:''; position:absolute; width:18px; height:18px; left:3px; bottom:3px; background:var(--dm); border-radius:50%; transition:all 0.2s; }
+.toggle input:checked + .slider { background:var(--gn); }
+.toggle input:checked + .slider::before { transform:translateX(20px); background:var(--tx); }
+.hints-step { background:var(--sf); border:1px solid var(--bd); border-radius:var(--r); padding:20px; margin-bottom:24px; }
+.hints-cat { margin-bottom:16px; }
+.hints-cat:last-child { margin-bottom:0; }
+.hints-cat-title { font-size:12px; font-weight:600; color:var(--gn); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+.hints-item { font-size:13px; color:var(--dm); padding-left:14px; position:relative; margin-bottom:4px; }
+.hints-item::before { content:"\2022"; position:absolute; left:0; color:var(--gn); }
 </style>
 </head>
 <body>
@@ -109,6 +123,10 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif
   <div class="modal-content">
     <h2>KMCR Asystent</h2>
     <p class="version">Wersja 0.2 (marzec 26)</p>
+    <div class="toggle-row">
+      <span class="toggle-label">Podpowiedzi kliniczne</span>
+      <label class="toggle"><input type="checkbox" id="hints-toggle" checked><span class="slider"></span></label>
+    </div>
     <p class="author">Autor: jaqbek</p>
     <p class="contact">
       Masz pomysł czego tu brakuje? Napisz na:<br>
@@ -180,7 +198,7 @@ var CATS=[
 
 var SC={
 
-chest_pain:{steps:[
+chest_pain:{hints:{badanie:["Osłuchiwanie klatki piersiowej","Ocena tętna na obwodzie i symetrii","Ocena wypełnienia żył szyjnych","Pomiar RR na obu kończynach","Ocena obrzęków kk. dolnych"],diagnostyka:["EKG 12-odprowadzeniowe (powtórzyć po 10 min)","Pomiar SpO2","Pomiar glikemii","Ocena bólu w skali NRS"],postepowanie:["Protokół MONA (Morfina, Tlen, Nitrogliceryna, ASA)","ASA 300 mg rozgryźć (bez alergii!)","Nitrogliceryna 0,4 mg s.l. (SBP>90)","Dostęp dożylny","Pozycja półsiedząca","Przygotować do transportu na hemodynamikę przy STEMI"]},steps:[
   {id:"c",title:"Okoliczności",fields:[
     {id:"onset_time",label:"Czas trwania",type:"single",options:["< 20 min","20-60 min","1-3 godz.","3-6 godz.","> 6 godz."]},
     {id:"onset_context",label:"Okoliczności",type:"single",options:["w spoczynku","przy wysiłku","po posiłku","w nocy — obudził ze snu","przy stresie","po kokainie / amfetaminie","po urazie klatki"]},
@@ -233,7 +251,7 @@ chest_pain:{steps:[
 },warn:function(d){var w=[];if(!h(d,'pain_nrs'))w.push('Brak NRS');if(!h(d,'radiation'))w.push('Brak promieniowania');if(!h(d,'symptoms'))w.push('Brak objawów towarzyszących');return w;}
 },
 
-dyspnea:{steps:[
+dyspnea:{hints:{badanie:["Osłuchiwanie płuc (świsty, rzężenia, szmer oddechowy)","Częstość oddechów i tor oddychania","Praca dodatkowych mięśni oddechowych","Ocena symetrii ruchów klatki","Ocena żył szyjnych","Obrzęki obwodowe"],diagnostyka:["Pomiar SpO2","EKG 12-odprowadzeniowe","Pomiar glikemii","Ocena w skali mMRC/stopień duszności","Kapnografia jeśli dostępna"],postepowanie:["Pozycja siedząca/wysoka","Tlenoterapia wg SpO2","Nebulizacja (salbutamol/ipratropium przy skurczu)","Dostęp dożylny","Rozważyć CPAP przy obrzęku płuc","Rozważyć adrenalinę przy podejrzeniu anafilaksji"]},steps:[
   {id:"c",title:"Okoliczności",fields:[
     {id:"onset_speed",label:"Początek",type:"single",options:["nagły (minuty)","stopniowy (godziny)","narastający od dni","przewlekła z zaostrzeniem"]},
     {id:"onset_ctx",label:"Okoliczności",type:"single",options:["w spoczynku","przy wysiłku","w nocy — obudziła ze snu","po ekspozycji na alergen","w przebiegu infekcji","po aspiracji","po urazie klatki"]},
@@ -286,7 +304,7 @@ dyspnea:{steps:[
 },warn:function(d){var w=[];if(!h(d,'onset_speed'))w.push('Brak początku');if(!h(d,'dys_type'))w.push('Brak typu');if(!h(d,'speech'))w.push('Brak oceny mówienia');if(!h(d,'sounds'))w.push('Brak osłuchiwania');return w;}
 },
 
-stroke:{steps:[
+stroke:{hints:{badanie:["Skala FAST (Face, Arms, Speech, Time)","Skala Cincinnati lub NIHSS","Ocena źrenic (wielkość, reakcja na światło)","Ocena siły mięśniowej kk.","Ocena czucia i koordynacji","Ocena mowy (afazja, dyzartria)","Objaw Babińskiego"],diagnostyka:["Pomiar glikemii (wykluczyć hipoglikemię!)","Pomiar RR","EKG 12-odprowadzeniowe","Pomiar SpO2","Temperatura ciała","Czas wystąpienia objawów (okno terapeutyczne!)"],postepowanie:["Zabezpieczyć drożność dróg oddechowych","Pozycja z głową 30°","Nie obniżać RR (chyba że >220/120)","Dostęp dożylny (strona zdrowa!)","Nie podawać glukozy iv (chyba że hipoglikemia)","Transport na oddział udarowy — powiadomić szpital"]},steps:[
   {id:"c",title:"Czas",fields:[
     {id:"onset_time",label:"Godzina wystąpienia",type:"text",placeholder:"np. ok. 14:30"},
     {id:"last_healthy",label:"Ostatnio widziany zdrowym",type:"text",placeholder:"np. 06:30"},
@@ -324,7 +342,7 @@ warn:function(d){var w=[];if(!h(d,'onset_time')&&!h(d,'last_healthy'))w.push('KR
 },
 
 // ZATRZYMANIE KRĄŻENIA
-cardiac_arrest:{steps:[
+cardiac_arrest:{hints:{badanie:["Potwierdzić NZK: brak reakcji + brak oddechu/gasping","Kontrola tętna na t. szyjnej (max 10 s)","Ocena rytmu w defibrylatorze"],diagnostyka:["Podłączyć defibrylator / AED","Kapnografia (ETCO2) po intubacji","Monitorowanie jakości uciskania (głębokość, częstość)"],postepowanie:["Uciskanie 30:2 (100-120/min, 5-6 cm)","Defibrylacja przy VF/pVT (dwufazowo 150-200 J)","Adrenalina 1 mg iv co 3-5 min","Amiodaron 300 mg iv przy opornym VF/pVT","Zabezpieczyć drogi oddechowe (intubacja/SAD)","Rozważyć odwracalne przyczyny — 4H i 4T","Dostęp dożylny / doszpikowy"]},steps:[
   {id:"c",title:"Okoliczności NZK",fields:[
     {id:"witnessed",label:"NZK",type:"single",options:["obserwowane przez ZRM","obserwowane przez świadka","nieobserwowane — znaleziony"]},
     {id:"location",label:"Miejsce zdarzenia",type:"single",options:["mieszkanie / dom","miejsce publiczne","miejsce pracy","ulica","pojazd","szpital / przychodnia","DPS / ZOL","inne"]},
@@ -362,7 +380,7 @@ warn:function(d){var w=[];if(!h(d,'witnessed'))w.push('Brak info czy NZK obserwo
 },
 
 // NADCIŚNIENIE
-hypertension:{steps:[
+hypertension:{hints:{badanie:["Pomiar RR na obu kończynach","Ocena neurologiczna (ból głowy, zaburzenia widzenia, niedowład)","Osłuchiwanie płuc (obrzęk?)","Osłuchiwanie serca (szmer, galop S3)","Ocena dna oka jeśli możliwe","Ocena obrzęków"],diagnostyka:["EKG 12-odprowadzeniowe","Pomiar glikemii","Pomiar SpO2","Badanie neurologiczne (skala Glasgow)"],postepowanie:["Pozycja półsiedząca","Obniżyć RR o max 20-25% w ciągu 1h","Captopril 12,5-25 mg s.l. lub urapidyl iv","Furosemid iv przy obrzęku płuc","Dostęp dożylny","Monitorować RR co 5-10 min","Unikać gwałtownych spadków RR"]},steps:[
   {id:"c",title:"Okoliczności",fields:[
     {id:"onset",label:"Początek objawów",type:"single",options:["nagły","stopniowy (godziny)","narastający od dni","pacjent zauważył wysokie wartości przy pomiarze"]},
     {id:"bp_values",label:"Wartości RR zmierzone przez pacjenta",type:"text",placeholder:"np. 220/120, 190/110..."},
@@ -395,7 +413,7 @@ hypertension:{steps:[
 warn:function(d){var w=[];if(!h(d,'symptoms'))w.push('Brak objawów');if(!h(d,'ht_known'))w.push('Brak info czy NT rozpoznane');return w;}
 },
 
-trauma:{steps:[
+trauma:{hints:{badanie:["Ocena wg ABCDE","Ocena mechanizmu urazu","Badanie głowy: rany, deformacje, płyn z uszu/nosa","Badanie kręgosłupa szyjnego (palpacja)","Badanie klatki piersiowej (symetria, trzeszczenie)","Badanie brzucha (tkliwość, obrona mięśniowa)","Badanie miednicy (stabilność)","Badanie kończyn (deformacje, tętno obwodowe)","Ocena neurologiczna (GCS, źrenice, czucie)"],diagnostyka:["Pomiar SpO2","Pomiar RR","Pomiar glikemii","EKG przy urazie klatki","Skala GCS","Ocena bólu NRS"],postepowanie:["Stabilizacja kręgosłupa szyjnego","Tamowanie krwawień zewnętrznych","2x dostęp dożylny (duży kaliber)","Płynoterapia — bolus 250 ml, ocena odpowiedzi","Unieruchomienie złamań","Zapobieganie hipotermii","Analgezja (fentanyl 1 mcg/kg iv)","Transport do centrum urazowego"]},steps:[
   {id:"m",title:"Mechanizm",fields:[
     {id:"mechanism",label:"Mechanizm",type:"single",options:["upadek z wysokości","upadek z poziomu","upadek ze schodów","pobicie / napaść","uraz sportowy","uraz w pracy / maszyny","uraz penetrujący (nóż)","uraz penetrujący (inny)","przygniecenie","oparzenie","tonięcie","porażenie prądem","inny"]},
     {id:"mech_det",label:"Szczegóły",type:"text",placeholder:"np. upadek z 3m na beton, uderzenie pięścią w twarz..."},
@@ -444,7 +462,7 @@ warn:function(d){var w=[];if(!h(d,'mechanism'))w.push('Brak mechanizmu');if(!h(d
 },
 
 // WYPADEK KOMUNIKACYJNY
-traffic:{steps:[
+traffic:{hints:{badanie:["Bezpieczeństwo miejsca zdarzenia!","Ocena liczby poszkodowanych — segregacja START","Ocena wg ABCDE każdego poszkodowanego","Mechanizm urazu (prędkość, rodzaj pojazdu, pasy, airbag)","Badanie kręgosłupa szyjnego","Pełne badanie urazowe jak trauma"],diagnostyka:["Pomiar SpO2","Pomiar RR","Skala GCS","Ocena bólu NRS","EKG przy urazie klatki"],postepowanie:["Zabezpieczenie kręgosłupa szyjnego (kołnierz)","Deska ortopedyczna / KED / materac próżniowy","2x dostęp dożylny","Tamowanie krwawień, opatrunki","Płynoterapia ostrożna (SBP>90)","Analgezja (fentanyl / ketamina)","Zapobieganie hipotermii","Wezwać LPR / HEMS przy wskazaniach"]},steps:[
   {id:"m",title:"Mechanizm",fields:[
     {id:"role",label:"Rola poszkodowanego",type:"single",options:["kierowca samochodu","pasażer — przód","pasażer — tył","pieszy potrącony","rowerzysta","motocyklista","kierowca ciężarówki / TIR","pasażer autobusu","hulajnoga elektryczna"]},
     {id:"collision",label:"Typ zderzenia",type:"single",options:["czołowe","boczne — strona kierowcy","boczne — strona pasażera","tylne","dachowanie","najechanie na przeszkodę","wypadnięcie z pojazdu","potrącenie na przejściu","potrącenie poza przejściem","zderzenie z rowerzystą/motocyklistą"]},
@@ -503,7 +521,7 @@ traffic:{steps:[
 warn:function(d){var w=[];if(!h(d,'role'))w.push('Brak roli poszkodowanego');if(!h(d,'collision'))w.push('Brak typu zderzenia');if(!h(d,'safety'))w.push('Brak zabezpieczeń');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'inj_loc'))w.push('Brak obrażeń');if(!h(d,'spine'))w.push('Brak immobilizacji');return w;}
 },
 
-abdominal:{steps:[
+abdominal:{hints:{badanie:["Oglądanie brzucha (wzdęcie, asymetria, blizny)","Osłuchiwanie perystaltyki","Palpacja (tkliwość, obrona, Blumberg)","Ocena bólu: lokalizacja, charakter, promieniowanie","Badanie per rectum — krew (rozważyć)","Ocena odwodnienia (turgor skóry, śluzówki)"],diagnostyka:["Pomiar glikemii","Pomiar SpO2","Pomiar RR","EKG (wykluczyć OZW — ból w nadbrzuszu!)","Pomiar temperatury","Ocena bólu NRS"],postepowanie:["Pozycja komfortowa (na boku z podkurczonymi nogami)","Dostęp dożylny","Płynoterapia (0,9% NaCl)","Analgezja (metamizol / paracetamol iv / opioid)","Leki przeciwwymiotne (ondansetron 4 mg iv)","NIE podawać leków p.o.","Transport na SOR / oddział chirurgii"]},steps:[
   {id:"c",title:"Okoliczności",fields:[
     {id:"onset",label:"Początek",type:"single",options:["nagły, sekundy","nagły, minuty","stopniowy, godziny","narastający od dni","nawracający"]},
     {id:"duration",label:"Czas trwania",type:"single",options:["< 1 godz.","1-6 godz.","6-24 godz.","1-3 dni","> 3 dni"]},
@@ -553,7 +571,7 @@ abdominal:{steps:[
 warn:function(d){var w=[];if(!h(d,'onset'))w.push('Brak początku');if(!h(d,'pain_type'))w.push('Brak charakteru');if(!h(d,'location'))w.push('Brak lokalizacji');if(!h(d,'perit'))w.push('Brak badania brzucha');return w;}
 },
 
-hypoglycemia:{steps:[
+hypoglycemia:{hints:{badanie:["Ocena świadomości (GCS)","Ocena potliwości, bladości, drżenia","Ocena objawów neurologicznych","Ocena zdolności połykania"],diagnostyka:["Pomiar glikemii (pilny!)","Pomiar SpO2","Pomiar RR","EKG u diabetyków"],postepowanie:["Hipoglikemia przytomny: glukoza p.o. (sok, cukier, żel)","Hipoglikemia nieprzytomny: Glukoza 20% 100 ml iv","Glukagon 1 mg im jeśli brak dostępu iv","Kontrolna glikemia po 15 min","Hiperglikemia: 0,9% NaCl iv 500 ml/h","Insulina wg protokołu przy DKA","Wyrównanie elektrolitów (K+)"]},steps:[
   {id:"g",title:"Glikemia",fields:[
     {id:"gluc",label:"Glikemia (mg/dl)",type:"text",placeholder:"np. 42, 380, HI, LO"},
     {id:"type",label:"Typ",type:"single",options:["hipoglikemia","hiperglikemia"]},
@@ -596,7 +614,7 @@ hypoglycemia:{steps:[
 warn:function(d){var w=[];if(!h(d,'gluc'))w.push('KRYTYCZNE: Brak glikemii');if(!h(d,'consciousness'))w.push('Brak świadomości');if(!h(d,'dm_type'))w.push('Brak typu cukrzycy');if(!h(d,'dm_tx'))w.push('Brak leczenia');if(!h(d,'last_ins'))w.push('Brak ostatniego podania');return w;}
 },
 
-allergy:{steps:[
+allergy:{hints:{badanie:["Ocena dróg oddechowych (obrzęk, stridor)","Osłuchiwanie płuc (świsty, skurcz)","Ocena skóry (pokrzywka, obrzęk naczynioruchowy)","Ocena RR (wstrząs anafilaktyczny?)","Czas od ekspozycji na alergen","Identyfikacja alergenu"],diagnostyka:["Pomiar SpO2","Pomiar RR","EKG","Pomiar glikemii"],postepowanie:["Adrenalina 0,3-0,5 mg im (przednio-boczna pow. uda!)","Powtórzyć adrenalinę po 5-15 min jeśli brak poprawy","Pozycja Trendelenburga (przy hipotonii)","2x dostęp dożylny","NaCl 0,9% bolus 500-1000 ml przy hipotonii","Clemastyna 2 mg iv","Metyloprednizolon 125 mg iv","Salbutamol nebulizacja przy skurczu oskrzeli","Obserwacja min. 4-6h (reakcja dwufazowa!)"]},steps:[
   {id:"t",title:"Przyczyna",fields:[
     {id:"trigger",label:"Alergen",type:"single",options:["pokarm","lek doustny","lek dożylny","antybiotyk","NLPZ","kontrast","użądlenie osy","użądlenie pszczoły","użądlenie inne","lateks","alergen wziewny","wysiłek fizyczny","nieznany"]},
     {id:"trig_det",label:"Co dokładnie?",type:"text",placeholder:"np. orzeszki, amoksycylina..."},
@@ -639,7 +657,7 @@ warn:function(d){var w=[];if(!h(d,'trigger'))w.push('Brak alergenu');if(!h(d,'se
 },
 
 // CIĄŻA
-pregnancy:{steps:[
+pregnancy:{hints:{badanie:["Tydzień ciąży (data OM)","Ocena krwawienia z dróg rodnych","Ocena czynności skurczowej","Ocena ruchów płodu","Ocena objawów rzucawki (obrzęki, bóle głowy, zaburzenia widzenia)","Badanie RR (stan przedrzucawkowy?)"],diagnostyka:["Pomiar RR","Pomiar SpO2","Pomiar glikemii","Pomiar temperatury","EKG przy bólu w klatce piersiowej","HR płodu jeśli >24 Hbd"],postepowanie:["Pozycja na lewym boku (od 20 Hbd)","Dostęp dożylny","MgSO4 przy rzucawce/stanie przedrzucawkowym","Tokoliza przy porodzie przedwczesnym","Przygotować zestaw porodowy od 36 Hbd","Transport na oddział położniczy","Powiadomić szpital telefonicznie"]},steps:[
   {id:"c",title:"Okoliczności",fields:[
     {id:"reason",label:"Powód wezwania",type:"single",options:["czynność skurczowa / poród","krwawienie z dróg rodnych","odpłynięcie płynu owodniowego","silny ból brzucha","drgawki / rzucawka","wysokie ciśnienie tętnicze","utrata przytomności / omdlenie","uraz w ciąży","wymioty nieustępujące","gorączka w ciąży"]},
     {id:"gest_age",label:"Tydzień ciąży",type:"single",options:["< 12 Hbd (I trymestr)","12-20 Hbd","20-28 Hbd","28-34 Hbd","34-37 Hbd","37-40 Hbd","> 40 Hbd","nie zna tygodnia ciąży"]},
@@ -689,7 +707,7 @@ warn:function(d){var w=[];if(!h(d,'gest_age'))w.push('KRYTYCZNE: Brak tygodnia c
 },
 
 // GORĄCZKA
-fever:{steps:[
+fever:{hints:{badanie:["Pomiar temperatury (douszna/czołowa)","Ocena stanu nawodnienia","Ocena wysypki (petocje — meningokocemia!)","Objawy oponowe (sztywność karku, Kernig, Brudziński)","Ocena świadomości","Ocena fontanelli u niemowląt","Czas trwania gorączki"],diagnostyka:["Pomiar SpO2","Pomiar RR","Pomiar glikemii","EKG u starszych pacjentów","Kryteria qSOFA (FR≥22, zaburzenia świadomości, SBP≤100)"],postepowanie:["Paracetamol 15 mg/kg (dzieci) lub 1g iv (dorośli)","Ibuprofen u dzieci (jeśli >6 m.ż.)","Chłodzenie fizyczne","Płynoterapia iv przy odwodnieniu","Antybiotyk empiryczny przy podejrzeniu sepsy","Nie czekać z transportem przy objawach sepsy","Noworodek z gorączką — ZAWSZE pilny transport"]},steps:[
   {id:"c",title:"Okoliczności",fields:[
     {id:"age_group",label:"Grupa wiekowa",type:"single",options:["noworodek (< 28 dni)","niemowlę (1-12 mies.)","dziecko 1-5 lat","dziecko 6-12 lat","nastolatek 13-17 lat","dorosły","senior > 65 lat","senior > 80 lat"]},
     {id:"temp_value",label:"Temperatura zmierzona",type:"text",placeholder:"np. 39.2°C, 40.1°C"},
@@ -731,7 +749,7 @@ warn:function(d){var w=[];if(!h(d,'age_group'))w.push('Brak grupy wiekowej');if(
 },
 
 // UPOJENIE ALKOHOLOWE
-alcohol:{steps:[
+alcohol:{hints:{badanie:["Ocena świadomości (GCS)","Ocena źrenic","Wykluczyć uraz głowy (mechanizm upadku!)","Ocena temperatury ciała (hipotermia!)","Ocena odwodnienia","Objawy odstawienia (drżenia, majaczenie, drgawki)","Wykluczyć hipoglikemię"],diagnostyka:["Pomiar glikemii (obowiązkowy!)","Pomiar SpO2","Pomiar RR","Pomiar temperatury","EKG przy kołataniu serca / arytmii"],postepowanie:["Zabezpieczyć drożność dróg oddechowych","Pozycja boczna ustalona (przy obniżonej świadomości)","Dostęp dożylny","Tiamina 100 mg iv PRZED glukozą","Glukoza iv przy hipoglikemii","Diazepam iv przy drgawkach / delirium tremens","Ogrzewanie przy hipotermii","Obserwacja — nie zostawiać bez opieki"]},steps:[
   {id:"c",title:"Okoliczności",fields:[
     {id:"reason",label:"Powód wezwania",type:"single",options:["upojenie alkoholowe — osoba leży","upojenie alkoholowe — agresja","upojenie alkoholowe — uraz","zatrucie alkoholem (podejrzenie metanolu/glikolu)","zespół odstawienia","majaczenie alkoholowe (delirium tremens)","drgawki alkoholowe","przewlekła choroba alkoholowa — pogorszenie"]},
     {id:"who_called",label:"Kto wezwał",type:"single",options:["przypadkowy świadek","rodzina","policja","sam pacjent","personel izby wytrzeźwień","personel DPS / noclegowni"]},
@@ -779,7 +797,7 @@ warn:function(d){var w=[];if(!h(d,'consciousness'))w.push('Brak oceny świadomo�
   return w;}
 },
 
-psych:{steps:[
+psych:{hints:{badanie:["Ocena bezpieczeństwa (własnego i pacjenta!)","Ocena świadomości i orientacji","Ocena nastroju i afektu","Ocena myśli samobójczych (pytać wprost!)","Ocena pobudzenia psychomotorycznego","Wykluczyć przyczyny somatyczne (glikemia, uraz, leki)"],diagnostyka:["Pomiar glikemii (wykluczyć hipoglikemię!)","Pomiar SpO2","Pomiar RR","Pomiar temperatury","EKG przy podejrzeniu intoksykacji"],postepowanie:["Deeskalacja słowna (spokojny ton, krótkie zdania)","Zapewnić bezpieczeństwo (usunąć niebezpieczne przedmioty)","Midazolam 5 mg im lub haloperidol 5 mg im przy silnym pobudzeniu","Dostęp dożylny gdy możliwy","Ustawa o ochronie zdrowia psychicznego — art. 21/23","Transport z personelem (min. 2 osoby)","Dokumentować zachowanie i wypowiedzi pacjenta"]},steps:[
   {id:"r",title:"Powód",fields:[
     {id:"reason",label:"Główny problem",type:"single",options:["pobudzenie psychoruchowe","agresja","autoagresja","próba samobójcza","myśli samobójcze","atak paniki","lęk uogólniony","psychoza — omamy","psychoza — urojenia","mania","depresja ciężka","zatrucie substancjami","zespół abstynencyjny","delirium tremens","stupor / katatonia","odstawienie leków"]},
     {id:"onset",label:"Początek",type:"single",options:["nagły (godziny)","narastający (dni)","przewlekły z zaostrzeniem","po substancji","po odstawieniu substancji / leku"]},
@@ -832,7 +850,7 @@ psych:{steps:[
 },
 
 // ZASŁABNIĘCIE
-syncope:{steps:[
+syncope:{hints:{badanie:["Okoliczności zasłabnięcia (pozycja, aktywność, prodrom)","Czas trwania utraty przytomności","Ocena neurologiczna po odzyskaniu przytomności","Czy były drgawki? (świadkowie)","Ocena tętna (miarowy, niemiarowy, wolny)","Ocena urazu wtórnego (głowa!)"],diagnostyka:["EKG 12-odprowadzeniowe (blok AV, QT, Brugada)","Pomiar glikemii","Pomiar RR (leżąc i siedząc — próba ortostatyczna)","Pomiar SpO2","Pomiar temperatury"],postepowanie:["Pozycja leżąca z uniesionymi nogami","Dostęp dożylny","Płynoterapia przy hipotonii ortostatycznej","Atropina 0,5 mg iv przy bradykardii objawowej","Obserwacja i monitorowanie EKG","Transport na SOR (pierwsza utrata przytomności)","Kardiologiczne — pacjent musi mieć EKG na SOR"]},steps:[
   {id:"c",title:"Okoliczności",fields:[
     {id:"loc",label:"Utrata przytomności",type:"single",options:["tak — pełna utrata przytomności","nie — zasłabnięcie bez utraty przytomności","nieokreślone / niejasne"]},
     {id:"loc_duration",label:"Czas utraty przytomności",type:"single",options:["< 30 s","30 s – 2 min","2-5 min","> 5 min","nie dotyczy"],condition:{field:"loc",value:"tak — pełna utrata przytomności"}},
@@ -874,7 +892,7 @@ warn:function(d){var w=[];if(!h(d,'loc'))w.push('Brak info o utracie przytomnoś
 },
 
 // INNE / OGÓLNE
-general:{steps:[
+general:{hints:{badanie:["Ocena wg ABCDE","Ocena świadomości (GCS)","Pełne badanie fizykalne","Zebranie wywiadu SAMPLE","Ocena bólu (NRS)"],diagnostyka:["Pomiar SpO2","Pomiar RR","Pomiar glikemii","EKG 12-odprowadzeniowe","Pomiar temperatury"],postepowanie:["Dostęp dożylny wg potrzeb","Leczenie objawowe","Transport na SOR","Monitorowanie parametrów życiowych","Dokumentacja stanu pacjenta"]},steps:[
   {id:"a",title:"Opis zdarzenia",fields:[
     {id:"reason",label:"Powód wezwania",type:"text",placeholder:"np. złe samopoczucie, osłabienie, zawroty głowy..."},
     {id:"description",label:"Opis sytuacji",type:"text",placeholder:"Opisz sytuację własnymi słowami..."},
@@ -906,7 +924,7 @@ warn:function(d){var w=[];if(!h(d,'reason'))w.push('Brak powodu wezwania');if(!h
 },
 
 // POCUS
-burns:{steps:[
+burns:{hints:{badanie:["Ocena drożności dróg oddechowych (oparzenie inhalacyjne!)","Reguła dziewiątek Wallace'a — %TBSA","Głębokość oparzenia (I°, II°, III°)","Ocena oparzeń okrężnych (kończyny, klatka, szyja)","Mechanizm (termiczne, chemiczne, elektryczne)","Oparzenia twarzy, rąk, stóp, krocza — zawsze ciężkie"],diagnostyka:["Pomiar SpO2 (uwaga: CO zawyża!)","Pomiar RR","EKG przy oparzeniu elektrycznym","Pomiar glikemii","Ocena bólu NRS"],postepowanie:["Chłodzenie letnia wodą (15-20°C) max 20 min","NIE lód, NIE masło/mąka","Formuła Parklanda: 4ml × kg × %TBSA / 24h","Połowa w pierwszych 8h od oparzenia","Analgezja (morfina / fentanyl iv)","Opatrunki hydrożelowe / jałowe","Zabezpieczyć drogi oddechowe przy inhalacji","Escharotomia przy oparzeniu okrężnym","Transport do centrum oparzeniowego (>15% TBSA dorośli, >10% dzieci)"]},steps:[
 {id:"bm",title:"Mechanizm",fields:[
   {id:"burn_type",label:"Typ oparzenia",type:"single",options:["płomień","gorący płyn (oparzenie)","para","kontakt z gorącą powierzchnią","chemiczne — kwas","chemiczne — zasada","chemiczne — inne","elektryczne — niskie napięcie (<1000 V)","elektryczne — wysokie napięcie (≥1000 V)","błyskawica","odmrożenie","oparzenie słoneczne"]},
   {id:"environment",label:"Okoliczności",type:"multi",options:["zamknięta przestrzeń","wybuch / eksplozja","ekspozycja na dym","pożar budynku","pożar pojazdu","wypadek w pracy","w domu","na zewnątrz","brak szczególnych okoliczności"]},
@@ -1188,10 +1206,10 @@ var SAMPLE_STEP={id:"sample",title:"Wywiad / SAMPLE",fields:[
 ]};
 
 // APP
-var cur=null,step=0,D={},allSteps=[];
+var cur=null,curK=null,step=0,D={},allSteps=[];
 function show(id){document.querySelectorAll('.S').forEach(function(s){s.classList.remove('a')});document.getElementById(id).classList.add('a');document.getElementById('nf').style.display=id==='s1'?'flex':'none';window.scrollTo(0,0)}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('v');setTimeout(function(){t.classList.remove('v')},2000)}
-function start(k){cur=SC[k];allSteps=(k==='pocus'||k==='infusion')?cur.steps:[SAMPLE_STEP].concat(cur.steps);step=0;D={};show('s1');render()}
+function start(k){cur=SC[k];curK=k;var base=(k==='pocus'||k==='infusion')?cur.steps:[SAMPLE_STEP].concat(cur.steps);var hintsOn=localStorage.getItem('hintsEnabled');hintsOn=hintsOn===null?true:hintsOn==='1';if(hintsOn&&cur.hints){var cat=CATS.find(function(c){return c.k===k});var title=cat?cat.l:k;allSteps=[{id:'_hints',title:'Wskazówki: '+title,hints:cur.hints}].concat(base)}else{allSteps=base}step=0;D={};show('s1');render()}
 function R(){cur=null;step=0;D={};show('s0')}
 function gB(){show('s1');render()}
 function nS(){sv();if(step<allSteps.length-1){step++;render();window.scrollTo(0,0)}else genOut()}
@@ -1202,13 +1220,21 @@ function render(){
   var s=allSteps[step];
   document.getElementById('si').innerHTML=allSteps.map(function(x,i){return'<div class="sd'+(i<step?' d':i===step?' cur':'')+'"></div>'}).join('');
   var htm='<div class="st">'+s.title+'</div>';
-  s.fields.forEach(function(f){
-    if(f.condition&&D[f.condition.field]!==f.condition.value)return;
-    htm+='<div class="fl">'+f.label+'</div>';
-    if(f.type==='single'){htm+='<div class="fg">';f.options.forEach(function(o){htm+='<div class="c'+(D[f.id]===o?' s':'')+'" onclick="s1(\''+e(f.id)+'\',\''+e(o)+'\')">'+o+'</div>'});htm+='</div>';}
-    else if(f.type==='multi'){htm+='<div class="fg">';f.options.forEach(function(o){htm+='<div class="c m'+((D[f.id]||[]).indexOf(o)>=0?' s':'')+'" onclick="sM(\''+e(f.id)+'\',\''+e(o)+'\')">'+o+'</div>'});htm+='</div>';}
-    else if(f.type==='text'){htm+='<input class="ti" type="text" data-f="'+f.id+'" placeholder="'+e(f.placeholder||'')+'" value="'+e(D[f.id]||'')+'">';}
-  });
+  if(s.hints){
+    htm+='<div class="hints-step">';
+    if(s.hints.badanie&&s.hints.badanie.length){htm+='<div class="hints-cat"><div class="hints-cat-title">Badanie</div>';s.hints.badanie.forEach(function(h){htm+='<div class="hints-item">'+h+'</div>'});htm+='</div>';}
+    if(s.hints.diagnostyka&&s.hints.diagnostyka.length){htm+='<div class="hints-cat"><div class="hints-cat-title">Diagnostyka</div>';s.hints.diagnostyka.forEach(function(h){htm+='<div class="hints-item">'+h+'</div>'});htm+='</div>';}
+    if(s.hints.postepowanie&&s.hints.postepowanie.length){htm+='<div class="hints-cat"><div class="hints-cat-title">Postępowanie</div>';s.hints.postepowanie.forEach(function(h){htm+='<div class="hints-item">'+h+'</div>'});htm+='</div>';}
+    htm+='</div>';
+  } else {
+    s.fields.forEach(function(f){
+      if(f.condition&&D[f.condition.field]!==f.condition.value)return;
+      htm+='<div class="fl">'+f.label+'</div>';
+      if(f.type==='single'){htm+='<div class="fg">';f.options.forEach(function(o){htm+='<div class="c'+(D[f.id]===o?' s':'')+'" onclick="s1(\''+e(f.id)+'\',\''+e(o)+'\')">'+o+'</div>'});htm+='</div>';}
+      else if(f.type==='multi'){htm+='<div class="fg">';f.options.forEach(function(o){htm+='<div class="c m'+((D[f.id]||[]).indexOf(o)>=0?' s':'')+'" onclick="sM(\''+e(f.id)+'\',\''+e(o)+'\')">'+o+'</div>'});htm+='</div>';}
+      else if(f.type==='text'){htm+='<input class="ti" type="text" data-f="'+f.id+'" placeholder="'+e(f.placeholder||'')+'" value="'+e(D[f.id]||'')+'">';}
+    });
+  }
   document.getElementById('fc').innerHTML=htm;
   document.getElementById('bP').style.display=step===0?'none':'';
   document.getElementById('bN').textContent=step===allSteps.length-1?'Generuj tekst':'Dalej';
@@ -1223,7 +1249,7 @@ function genOut(){
   if(sam.length)full+='\n\n'+J(sam)+'.';
   if(o)full+='\n\n'+o;
   document.getElementById('oo').textContent=full;
-  var total=allSteps.reduce(function(s,st){return s+st.fields.filter(function(f){return!f.condition}).length},0);
+  var total=allSteps.filter(function(st){return!st.hints}).reduce(function(s,st){return s+st.fields.filter(function(f){return!f.condition}).length},0);
   var filled=Object.keys(D).filter(function(k){var v=D[k];if(Array.isArray(v))return v.length>0;if(typeof v==='string')return v.trim().length>0;return v!=null}).length;
   var pct=Math.min(100,Math.round(filled/total*100));
   var fl=document.getElementById('cpf');fl.style.width=pct+'%';fl.style.background=pct>=80?'var(--gn)':pct>=50?'var(--yl)':'var(--rd)';
@@ -1238,6 +1264,12 @@ function cT(t){dc(document.getElementById('o'+t).textContent,'Skopiowano')}
 function dc(t,m){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast(m)}).catch(function(){fb(t,m)});else fb(t,m)}
 function fb(t,m){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;left:-9999px';document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(m)}catch(x){toast('Zaznacz tekst ręcznie')}document.body.removeChild(a)}
 
+(function(){
+  var ht=document.getElementById('hints-toggle');
+  var stored=localStorage.getItem('hintsEnabled');
+  ht.checked=stored===null?true:stored==='1';
+  ht.addEventListener('change',function(){localStorage.setItem('hintsEnabled',ht.checked?'1':'0')});
+})();
 document.getElementById('close-modal').addEventListener('click', function() {
   document.getElementById('welcome-modal').style.display = 'none';
 });
