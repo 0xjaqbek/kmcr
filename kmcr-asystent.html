@@ -1003,22 +1003,18 @@ warn:function(d){var w=[];
 },
 
 infusion:{steps:[
-{id:"il",title:"Lek i pacjent",fields:[
+{id:"il",title:"Lek, pacjent i dawka",fields:[
   {id:"drug",label:"Lek",type:"single",options:["Noradrenalina","Adrenalina (wlew)","Dopamina","Dobutamina","Nitrogliceryna","Amiodaron","MgSO4","Heparyna","Insulina","Midazolam","Fentanyl","Propofol 1%","Ketamina","Oksytocyna","Nalokson (wlew)","inny (kalkulator ogólny)"]},
-  {id:"drug_custom",label:"Nazwa leku (przy wyborze 'inny')",type:"text",placeholder:"np. Deksmedetomidyna"},
-  {id:"weight",label:"Masa ciała (kg)",type:"text",placeholder:"np. 70"}
-]},
-{id:"ip",title:"Rozcieńczenie",fields:[
-  {id:"drug_qty",label:"Ilość leku (liczba)",type:"text",placeholder:"np. 4"},
-  {id:"drug_unit",label:"Jednostka leku",type:"single",options:["mg","µg","g","j. (jednostki)"]},
-  {id:"total_volume",label:"Objętość końcowa (ml)",type:"text",placeholder:"np. 50"},
-  {id:"solvent",label:"Rozpuszczalnik",type:"single",options:["NaCl 0.9%","Glukoza 5%","Ringer","woda do iniekcji","gotowy roztwór (bez rozcieńczania)"]}
-]},
-{id:"id",title:"Dawkowanie",fields:[
+  {id:"drug_custom",label:"Nazwa leku",type:"text",placeholder:"np. Deksmedetomidyna",condition:{field:"drug",value:"inny (kalkulator ogólny)"}},
+  {id:"weight",label:"Masa ciała (kg)",type:"text",placeholder:"np. 70"},
   {id:"dose_value",label:"Dawka (liczba)",type:"text",placeholder:"np. 0.1"},
-  {id:"dose_unit",label:"Jednostka dawki",type:"single",options:["µg/kg/min","µg/min","µg/kg/h","mg/kg/h","mg/h","mg/min","j./kg/h","j./h","ml/h"]}
+  {id:"dose_unit",label:"Jednostka dawki",type:"single",options:["µg/kg/min","µg/min","µg/kg/h","mg/kg/h","mg/h","mg/min","j./kg/h","j./h","ml/h"],condition:{field:"drug",value:"inny (kalkulator ogólny)"}}
 ]},
-{id:"iu",title:"Uwagi",fields:[
+{id:"ip",title:"Rozcieńczenie i uwagi",fields:[
+  {id:"drug_qty",label:"Ilość leku (liczba, puste = standard)",type:"text",placeholder:"np. 4"},
+  {id:"drug_unit",label:"Jednostka leku",type:"single",options:["mg","µg","g","j. (jednostki)"],condition:{field:"drug",value:"inny (kalkulator ogólny)"}},
+  {id:"total_volume",label:"Objętość końcowa (ml, puste = standard)",type:"text",placeholder:"np. 50"},
+  {id:"solvent",label:"Rozpuszczalnik",type:"single",options:["NaCl 0.9%","Glukoza 5%","Ringer","woda do iniekcji","gotowy roztwór (bez rozcieńczania)"]},
   {id:"route",label:"Droga podania",type:"single",options:["pompa strzykawkowa","pompa objętościowa","grawitacyjnie (kroplówka)"]},
   {id:"notes",label:"Uwagi",type:"text",placeholder:""}
 ]}
