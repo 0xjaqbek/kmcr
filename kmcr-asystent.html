@@ -1007,7 +1007,22 @@ infusion:{steps:[
   {id:"drug",label:"Lek",type:"single",options:["Noradrenalina","Adrenalina (wlew)","Dopamina","Dobutamina","Nitrogliceryna","Amiodaron","MgSO4","Heparyna","Insulina","Midazolam","Fentanyl","Propofol 1%","Ketamina","Oksytocyna","Nalokson (wlew)","inny (kalkulator ogólny)"]},
   {id:"drug_custom",label:"Nazwa leku",type:"text",placeholder:"np. Deksmedetomidyna",condition:{field:"drug",value:"inny (kalkulator ogólny)"}},
   {id:"weight",label:"Masa ciała (kg)",type:"text",placeholder:"np. 70"},
-  {id:"dose_value",label:"Dawka (liczba)",type:"text",placeholder:"np. 0.1"},
+  {id:"dose_nor",label:"Dawka (µg/kg/min)",type:"single",options:["0.05","0.1","0.2","0.3","0.5","1.0"],condition:{field:"drug",value:"Noradrenalina"}},
+  {id:"dose_adr",label:"Dawka (µg/kg/min)",type:"single",options:["0.01","0.02","0.05","0.1","0.2","0.5"],condition:{field:"drug",value:"Adrenalina (wlew)"}},
+  {id:"dose_dop",label:"Dawka (µg/kg/min)",type:"single",options:["2","5","10","15","20"],condition:{field:"drug",value:"Dopamina"}},
+  {id:"dose_dob",label:"Dawka (µg/kg/min)",type:"single",options:["2","5","10","15","20"],condition:{field:"drug",value:"Dobutamina"}},
+  {id:"dose_nit",label:"Dawka (µg/min)",type:"single",options:["10","20","50","100","200"],condition:{field:"drug",value:"Nitrogliceryna"}},
+  {id:"dose_ami",label:"Dawka (mg/min)",type:"single",options:["0.5","1.0"],condition:{field:"drug",value:"Amiodaron"}},
+  {id:"dose_mgs",label:"Dawka (mg/h)",type:"single",options:["1000","1500","2000"],condition:{field:"drug",value:"MgSO4"}},
+  {id:"dose_hep",label:"Dawka (j./h)",type:"single",options:["500","750","1000","1250","1500"],condition:{field:"drug",value:"Heparyna"}},
+  {id:"dose_ins",label:"Dawka (j./kg/h)",type:"single",options:["0.05","0.1"],condition:{field:"drug",value:"Insulina"}},
+  {id:"dose_mid",label:"Dawka (mg/kg/h)",type:"single",options:["0.03","0.05","0.1","0.15","0.2"],condition:{field:"drug",value:"Midazolam"}},
+  {id:"dose_fen",label:"Dawka (µg/kg/h)",type:"single",options:["0.5","1.0","1.5","2.0","3.0"],condition:{field:"drug",value:"Fentanyl"}},
+  {id:"dose_pro",label:"Dawka (mg/kg/h)",type:"single",options:["1","2","3","4"],condition:{field:"drug",value:"Propofol 1%"}},
+  {id:"dose_ket",label:"Dawka (mg/kg/h)",type:"single",options:["0.1","0.2","0.3","0.5"],condition:{field:"drug",value:"Ketamina"}},
+  {id:"dose_oks",label:"Dawka (j./h)",type:"single",options:["1","2","5","10","20"],condition:{field:"drug",value:"Oksytocyna"}},
+  {id:"dose_nal",label:"Dawka (mg/h)",type:"single",options:["0.4","0.6","0.8"],condition:{field:"drug",value:"Nalokson (wlew)"}},
+  {id:"dose_value",label:"Dawka ręcznie (inna wartość)",type:"text",placeholder:"np. 0.1"},
   {id:"dose_unit",label:"Jednostka dawki",type:"single",options:["µg/kg/min","µg/min","µg/kg/h","mg/kg/h","mg/h","mg/min","j./kg/h","j./h","ml/h"],condition:{field:"drug",value:"inny (kalkulator ogólny)"}}
 ]},
 {id:"ip",title:"Rozcieńczenie i uwagi",fields:[
@@ -1021,21 +1036,21 @@ infusion:{steps:[
 ],gen:function(d){
   var p=['Pompa infuzyjna'];
   var DR={
-    'Noradrenalina':{a:4,u:'mg',v:50,du:'µg/kg/min',lo:0.05,hi:1.0,wt:1,f:1000},
-    'Adrenalina (wlew)':{a:1,u:'mg',v:50,du:'µg/kg/min',lo:0.01,hi:0.5,wt:1,f:1000},
-    'Dopamina':{a:200,u:'mg',v:50,du:'µg/kg/min',lo:2,hi:20,wt:1,f:1000},
-    'Dobutamina':{a:250,u:'mg',v:50,du:'µg/kg/min',lo:2,hi:20,wt:1,f:1000},
-    'Nitrogliceryna':{a:25,u:'mg',v:50,du:'µg/min',lo:10,hi:200,wt:0,f:1000},
-    'Amiodaron':{a:900,u:'mg',v:50,du:'mg/min',lo:0.5,hi:1.0,wt:0,f:1},
-    'MgSO4':{a:2000,u:'mg',v:50,du:'mg/h',lo:1000,hi:2000,wt:0,f:1},
-    'Heparyna':{a:25000,u:'j.',v:50,du:'j./h',lo:500,hi:1500,wt:0,f:1},
-    'Insulina':{a:50,u:'j.',v:50,du:'j./kg/h',lo:0.05,hi:0.1,wt:1,f:1},
-    'Midazolam':{a:15,u:'mg',v:50,du:'mg/kg/h',lo:0.03,hi:0.2,wt:1,f:1},
-    'Fentanyl':{a:0.5,u:'mg',v:50,du:'µg/kg/h',lo:0.5,hi:3.0,wt:1,f:1000},
-    'Propofol 1%':{a:200,u:'mg',v:20,du:'mg/kg/h',lo:1,hi:4,wt:1,f:1},
-    'Ketamina':{a:200,u:'mg',v:50,du:'mg/kg/h',lo:0.1,hi:0.5,wt:1,f:1},
-    'Oksytocyna':{a:10,u:'j.',v:50,du:'j./h',lo:1,hi:20,wt:0,f:1},
-    'Nalokson (wlew)':{a:0.4,u:'mg',v:50,du:'mg/h',lo:0.4,hi:0.8,wt:0,f:1}
+    'Noradrenalina':{a:4,u:'mg',v:50,du:'µg/kg/min',lo:0.05,hi:1.0,wt:1,f:1000,df:'dose_nor'},
+    'Adrenalina (wlew)':{a:1,u:'mg',v:50,du:'µg/kg/min',lo:0.01,hi:0.5,wt:1,f:1000,df:'dose_adr'},
+    'Dopamina':{a:200,u:'mg',v:50,du:'µg/kg/min',lo:2,hi:20,wt:1,f:1000,df:'dose_dop'},
+    'Dobutamina':{a:250,u:'mg',v:50,du:'µg/kg/min',lo:2,hi:20,wt:1,f:1000,df:'dose_dob'},
+    'Nitrogliceryna':{a:25,u:'mg',v:50,du:'µg/min',lo:10,hi:200,wt:0,f:1000,df:'dose_nit'},
+    'Amiodaron':{a:900,u:'mg',v:50,du:'mg/min',lo:0.5,hi:1.0,wt:0,f:1,df:'dose_ami'},
+    'MgSO4':{a:2000,u:'mg',v:50,du:'mg/h',lo:1000,hi:2000,wt:0,f:1,df:'dose_mgs'},
+    'Heparyna':{a:25000,u:'j.',v:50,du:'j./h',lo:500,hi:1500,wt:0,f:1,df:'dose_hep'},
+    'Insulina':{a:50,u:'j.',v:50,du:'j./kg/h',lo:0.05,hi:0.1,wt:1,f:1,df:'dose_ins'},
+    'Midazolam':{a:15,u:'mg',v:50,du:'mg/kg/h',lo:0.03,hi:0.2,wt:1,f:1,df:'dose_mid'},
+    'Fentanyl':{a:0.5,u:'mg',v:50,du:'µg/kg/h',lo:0.5,hi:3.0,wt:1,f:1000,df:'dose_fen'},
+    'Propofol 1%':{a:200,u:'mg',v:20,du:'mg/kg/h',lo:1,hi:4,wt:1,f:1,df:'dose_pro'},
+    'Ketamina':{a:200,u:'mg',v:50,du:'mg/kg/h',lo:0.1,hi:0.5,wt:1,f:1,df:'dose_ket'},
+    'Oksytocyna':{a:10,u:'j.',v:50,du:'j./h',lo:1,hi:20,wt:0,f:1,df:'dose_oks'},
+    'Nalokson (wlew)':{a:0.4,u:'mg',v:50,du:'mg/h',lo:0.4,hi:0.8,wt:0,f:1,df:'dose_nal'}
   };
   var dn=d.drug||'';
   var dr=DR[dn]||null;
@@ -1044,7 +1059,7 @@ infusion:{steps:[
   else if(dn&&dn!=='inny (kalkulator ogólny)')p.push('Lek: '+dn);
   var qty=parseFloat(d.drug_qty)||(dr?dr.a:0);
   var vol=parseFloat(d.total_volume)||(dr?dr.v:0);
-  var dose=parseFloat(d.dose_value)||0;
+  var dose=(dr&&dr.df&&h(d,dr.df))?parseFloat(d[dr.df]):parseFloat(d.dose_value)||0;
   var wm=d.weight?d.weight.match(/(\d+[\.,]?\d*)/):null;
   var wt=wm?parseFloat(wm[1].replace(',','.')):0;
   var dUnit=dr?dr.u:(d.drug_unit||'mg');
@@ -1092,7 +1107,9 @@ warn:function(d){var w=[];
   if(custom&&!h(d,'total_volume'))w.push('Brak objętości końcowej');
   if(custom&&!h(d,'drug_unit'))w.push('Brak jednostki leku');
   if(custom&&!h(d,'dose_unit'))w.push('Brak jednostki dawki');
-  if(!h(d,'dose_value'))w.push('Brak dawki');
+  var DF={'Noradrenalina':'dose_nor','Adrenalina (wlew)':'dose_adr','Dopamina':'dose_dop','Dobutamina':'dose_dob','Nitrogliceryna':'dose_nit','Amiodaron':'dose_ami','MgSO4':'dose_mgs','Heparyna':'dose_hep','Insulina':'dose_ins','Midazolam':'dose_mid','Fentanyl':'dose_fen','Propofol 1%':'dose_pro','Ketamina':'dose_ket','Oksytocyna':'dose_oks','Nalokson (wlew)':'dose_nal'};
+  var doseOk=h(d,'dose_value')||(DF[dn]&&h(d,DF[dn]));
+  if(!doseOk)w.push('Brak dawki');
   var needsWt=preset?DR2[dn]:false;
   if(custom&&h(d,'dose_unit')&&d.dose_unit.indexOf('/kg')>=0)needsWt=true;
   if(needsWt&&!h(d,'weight'))w.push('Brak masy ciała (wymagana dla tego leku)');
