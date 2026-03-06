@@ -1284,6 +1284,12 @@ function cT(t){dc(document.getElementById('o'+t).textContent,'Skopiowano')}
 function dc(t,m){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast(m)}).catch(function(){fb(t,m)});else fb(t,m)}
 function fb(t,m){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;left:-9999px';document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(m)}catch(x){toast('Zaznacz tekst ręcznie')}document.body.removeChild(a)}
 
+(function(){
+  var ht=document.getElementById('hints-toggle');
+  var stored=localStorage.getItem('hintsEnabled');
+  ht.checked=stored===null?true:stored==='1';
+  ht.addEventListener('change',function(){localStorage.setItem('hintsEnabled',ht.checked?'1':'0')});
+})();
 document.getElementById('close-modal').addEventListener('click', function() {
   document.getElementById('welcome-modal').style.display = 'none';
 });
