@@ -1034,7 +1034,6 @@ infusion:{steps:[
   {id:"notes",label:"Uwagi",type:"text",placeholder:""}
 ]}
 ],gen:function(d){
-  var p=['Pompa infuzyjna'];
   var DR={
     'Noradrenalina':{a:4,u:'mg',v:50,du:'µg/kg/min',lo:0.05,hi:1.0,wt:1,f:1000,df:'dose_nor'},
     'Adrenalina (wlew)':{a:1,u:'mg',v:50,du:'µg/kg/min',lo:0.01,hi:0.5,wt:1,f:1000,df:'dose_adr'},
@@ -1055,8 +1054,7 @@ infusion:{steps:[
   var dn=d.drug||'';
   var dr=DR[dn]||null;
   var custom=!dr;
-  if(custom&&h(d,'drug_custom'))p.push('Lek: '+d.drug_custom.trim());
-  else if(dn&&dn!=='inny (kalkulator ogólny)')p.push('Lek: '+dn);
+  var name=custom?(h(d,'drug_custom')?d.drug_custom.trim():'—'):(dn||'—');
   var qty=parseFloat(d.drug_qty)||(dr?dr.a:0);
   var vol=parseFloat(d.total_volume)||(dr?dr.v:0);
   var dose=(dr&&dr.df&&h(d,dr.df))?parseFloat(d[dr.df]):parseFloat(d.dose_value)||0;
@@ -1064,11 +1062,7 @@ infusion:{steps:[
   var wt=wm?parseFloat(wm[1].replace(',','.')):0;
   var dUnit=dr?dr.u:(d.drug_unit||'mg');
   var doseU=dr?dr.du:(d.dose_unit||'');
-  if(qty>0&&vol>0){
-    var conc=qty/vol;
-    p.push('Rozcieńczenie: '+qty+' '+dUnit+' / '+vol+' ml'+(h(d,'solvent')&&d.solvent!=='gotowy roztwór (bez rozcieńczania)'?' '+d.solvent:''));
-    p.push('Stężenie: '+conc.toFixed(4).replace(/\.?0+$/,'')+' '+dUnit+'/ml');
-  }
+  var mlh=null;
   if(qty>0&&vol>0&&dose>0&&doseU){
     var fac=dr?dr.f:1;
     if(custom){
@@ -1081,21 +1075,33 @@ infusion:{steps:[
     var rate=dose;
     if(doseU.indexOf('/min')>=0)rate=rate*60;
     if(doseU.indexOf('/kg')>=0)rate=rate*wt;
-    if(doseU==='ml/h'){
-      p.push('Prędkość: '+dose+' ml/h');
-    }else if(concD>0){
-      var mlh=rate/concD;
-      p.push('Dawka: '+dose+' '+doseU);
-      if(wt>0&&doseU.indexOf('/kg')>=0)p.push('Masa ciała: '+wt+' kg');
-      p.push('Prędkość: '+mlh.toFixed(2).replace(/\.?0+$/,'')+' ml/h');
-      if(dr){
-        p.push('Zakres dawek: '+dr.lo+'–'+dr.hi+' '+dr.du);
-        if(dose<dr.lo||dose>dr.hi)p.push('⚠ Dawka poza zakresem standardowym!');
-      }
-    }
+    if(doseU==='ml/h')mlh=dose;
+    else if(concD>0)mlh=rate/concD;
   }
-  if(h(d,'route'))p.push('Droga: '+d.route);
-  return J(p)+'.';
+  var o='';
+  if(mlh!==null){
+    var mlhStr=mlh.toFixed(2).replace(/\.?0+$/,'');
+    o+='━━━━━━━━━━━━━━━━━━━━━━━━\n';
+    o+='  USTAW:  '+mlhStr+' ml/h\n';
+    o+='━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
+  }else{
+    o+='Uzupełnij dane aby obliczyć ml/h\n\n';
+  }
+  o+='Lek:  '+name+'\n';
+  if(qty>0&&vol>0){
+    var solv=(h(d,'solvent')&&d.solvent!=='gotowy roztwór (bez rozcieńczania)')?' '+d.solvent:'';
+    o+=qty+' '+dUnit+' / '+vol+' ml'+solv+'\n';
+    var conc=qty/vol;
+    o+='Stężenie: '+conc.toFixed(4).replace(/\.?0+$/,'')+' '+dUnit+'/ml\n';
+  }
+  if(dose>0&&doseU)o+='Dawka: '+dose+' '+doseU+'\n';
+  if(wt>0)o+='MC: '+wt+' kg\n';
+  if(dr){
+    o+='Zakres: '+dr.lo+'–'+dr.hi+' '+dr.du+'\n';
+    if(dose>0&&(dose<dr.lo||dose>dr.hi))o+='\n⚠ DAWKA POZA ZAKRESEM STANDARDOWYM\n';
+  }
+  if(h(d,'route'))o+='\n'+d.route;
+  return o.trim();
 },genO:function(d){var p=[];if(h(d,'notes'))p.push(d.notes.trim());return p.length?J(p)+'.':'';},
 warn:function(d){var w=[];
   var DR2={'Noradrenalina':1,'Adrenalina (wlew)':1,'Dopamina':1,'Dobutamina':1,'Nitrogliceryna':0,'Amiodaron':0,'MgSO4':0,'Heparyna':0,'Insulina':1,'Midazolam':1,'Fentanyl':1,'Propofol 1%':1,'Ketamina':1,'Oksytocyna':0,'Nalokson (wlew)':0};
