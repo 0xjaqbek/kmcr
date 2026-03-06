@@ -1234,10 +1234,10 @@ var SAMPLE_STEP={id:"sample",title:"Wywiad / SAMPLE",fields:[
 ]};
 
 // APP
-var cur=null,step=0,D={},allSteps=[];
+var cur=null,curK=null,step=0,D={},allSteps=[];
 function show(id){document.querySelectorAll('.S').forEach(function(s){s.classList.remove('a')});document.getElementById(id).classList.add('a');document.getElementById('nf').style.display=id==='s1'?'flex':'none';window.scrollTo(0,0)}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('v');setTimeout(function(){t.classList.remove('v')},2000)}
-function start(k){cur=SC[k];allSteps=(k==='pocus'||k==='infusion')?cur.steps:[SAMPLE_STEP].concat(cur.steps);step=0;D={};show('s1');render()}
+function start(k){cur=SC[k];curK=k;var base=(k==='pocus'||k==='infusion')?cur.steps:[SAMPLE_STEP].concat(cur.steps);var hintsOn=localStorage.getItem('hintsEnabled');hintsOn=hintsOn===null?true:hintsOn==='1';if(hintsOn&&cur.hints){var cat=CATS.find(function(c){return c.k===k});var title=cat?cat.l:k;allSteps=[{id:'_hints',title:'Wskazówki: '+title,hints:cur.hints}].concat(base)}else{allSteps=base}step=0;D={};show('s1');render()}
 function R(){cur=null;step=0;D={};show('s0')}
 function gB(){show('s1');render()}
 function nS(){sv();if(step<allSteps.length-1){step++;render();window.scrollTo(0,0)}else genOut()}
@@ -1248,13 +1248,21 @@ function render(){
   var s=allSteps[step];
   document.getElementById('si').innerHTML=allSteps.map(function(x,i){return'<div class="sd'+(i<step?' d':i===step?' cur':'')+'"></div>'}).join('');
   var htm='<div class="st">'+s.title+'</div>';
-  s.fields.forEach(function(f){
-    if(f.condition&&D[f.condition.field]!==f.condition.value)return;
-    htm+='<div class="fl">'+f.label+'</div>';
-    if(f.type==='single'){htm+='<div class="fg">';f.options.forEach(function(o){htm+='<div class="c'+(D[f.id]===o?' s':'')+'" onclick="s1(\''+e(f.id)+'\',\''+e(o)+'\')">'+o+'</div>'});htm+='</div>';}
-    else if(f.type==='multi'){htm+='<div class="fg">';f.options.forEach(function(o){htm+='<div class="c m'+((D[f.id]||[]).indexOf(o)>=0?' s':'')+'" onclick="sM(\''+e(f.id)+'\',\''+e(o)+'\')">'+o+'</div>'});htm+='</div>';}
-    else if(f.type==='text'){htm+='<input class="ti" type="text" data-f="'+f.id+'" placeholder="'+e(f.placeholder||'')+'" value="'+e(D[f.id]||'')+'">';}
-  });
+  if(s.hints){
+    htm+='<div class="hints-step">';
+    if(s.hints.badanie&&s.hints.badanie.length){htm+='<div class="hints-cat"><div class="hints-cat-title">Badanie</div>';s.hints.badanie.forEach(function(h){htm+='<div class="hints-item">'+h+'</div>'});htm+='</div>';}
+    if(s.hints.diagnostyka&&s.hints.diagnostyka.length){htm+='<div class="hints-cat"><div class="hints-cat-title">Diagnostyka</div>';s.hints.diagnostyka.forEach(function(h){htm+='<div class="hints-item">'+h+'</div>'});htm+='</div>';}
+    if(s.hints.postepowanie&&s.hints.postepowanie.length){htm+='<div class="hints-cat"><div class="hints-cat-title">Postępowanie</div>';s.hints.postepowanie.forEach(function(h){htm+='<div class="hints-item">'+h+'</div>'});htm+='</div>';}
+    htm+='</div>';
+  } else {
+    s.fields.forEach(function(f){
+      if(f.condition&&D[f.condition.field]!==f.condition.value)return;
+      htm+='<div class="fl">'+f.label+'</div>';
+      if(f.type==='single'){htm+='<div class="fg">';f.options.forEach(function(o){htm+='<div class="c'+(D[f.id]===o?' s':'')+'" onclick="s1(\''+e(f.id)+'\',\''+e(o)+'\')">'+o+'</div>'});htm+='</div>';}
+      else if(f.type==='multi'){htm+='<div class="fg">';f.options.forEach(function(o){htm+='<div class="c m'+((D[f.id]||[]).indexOf(o)>=0?' s':'')+'" onclick="sM(\''+e(f.id)+'\',\''+e(o)+'\')">'+o+'</div>'});htm+='</div>';}
+      else if(f.type==='text'){htm+='<input class="ti" type="text" data-f="'+f.id+'" placeholder="'+e(f.placeholder||'')+'" value="'+e(D[f.id]||'')+'">';}
+    });
+  }
   document.getElementById('fc').innerHTML=htm;
   document.getElementById('bP').style.display=step===0?'none':'';
   document.getElementById('bN').textContent=step===allSteps.length-1?'Generuj tekst':'Dalej';
@@ -1269,7 +1277,7 @@ function genOut(){
   if(sam.length)full+='\n\n'+J(sam)+'.';
   if(o)full+='\n\n'+o;
   document.getElementById('oo').textContent=full;
-  var total=allSteps.reduce(function(s,st){return s+st.fields.filter(function(f){return!f.condition}).length},0);
+  var total=allSteps.filter(function(st){return!st.hints}).reduce(function(s,st){return s+st.fields.filter(function(f){return!f.condition}).length},0);
   var filled=Object.keys(D).filter(function(k){var v=D[k];if(Array.isArray(v))return v.length>0;if(typeof v==='string')return v.trim().length>0;return v!=null}).length;
   var pct=Math.min(100,Math.round(filled/total*100));
   var fl=document.getElementById('cpf');fl.style.width=pct+'%';fl.style.background=pct>=80?'var(--gn)':pct>=50?'var(--yl)':'var(--rd)';
