@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>KMCR Asystent</title>
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="KMCR">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root {
   --bg: #000000;  --sf: #0a0a0a;  --sf2: #171717;  --bd: #262626;  --tx: #ededed;  --dm: #a3a3a3;  --ac: #ffffff;  --ag: rgba(255,255,255,.1);  --rd: #ef4444;  --gn: #10b981;  --gb: rgba(16,185,129,.1);  --yl: #f59e0b;  --yb: rgba(245,158,11,.1);  --r: 8px;}
@@ -1280,5 +1286,6 @@ const ref=doc(db,'stats','kmcr');
 setDoc(ref,{views:increment(1)},{merge:true});
 window.trackDownload=function(){setDoc(ref,{downloads:increment(1)},{merge:true})};
 </script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
 </body>
 </html>
